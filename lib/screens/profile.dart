@@ -15,7 +15,6 @@ import 'package:toast/toast.dart';
 import 'package:active_ecommerce_flutter/addon_config.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
 class Profile extends StatefulWidget {
   Profile({Key key, this.show_back_button = false}) : super(key: key);
 
@@ -141,7 +140,7 @@ class _ProfileState extends State<Profile> {
           height: 100,
           child: Center(
               child: Text(
-                AppLocalizations.of(context).profile_screen_please_log_in,
+            AppLocalizations.of(context).profile_screen_please_log_in,
             style: TextStyle(color: MyTheme.font_grey),
           )));
     } else {
@@ -332,7 +331,8 @@ class _ProfileState extends State<Profile> {
         children: [
           InkWell(
             onTap: () {
-              ToastComponent.showDialog(AppLocalizations.of(context).common_coming_soon, context,
+              ToastComponent.showDialog(
+                  AppLocalizations.of(context).common_coming_soon, context,
                   gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
             },
             child: Visibility(
@@ -358,7 +358,8 @@ class _ProfileState extends State<Profile> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
-                        AppLocalizations.of(context).profile_screen_notification,
+                        AppLocalizations.of(context)
+                            .profile_screen_notification,
                         textAlign: TextAlign.center,
                         style:
                             TextStyle(color: MyTheme.font_grey, fontSize: 14),
@@ -396,7 +397,8 @@ class _ProfileState extends State<Profile> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
-                      AppLocalizations.of(context).profile_screen_purchase_history,
+                      AppLocalizations.of(context)
+                          .profile_screen_purchase_history,
                       textAlign: TextAlign.center,
                       style: TextStyle(color: MyTheme.font_grey, fontSize: 14),
                     ),
@@ -434,7 +436,8 @@ class _ProfileState extends State<Profile> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
-                            AppLocalizations.of(context).profile_screen_earning_points,
+                            AppLocalizations.of(context)
+                                .profile_screen_earning_points,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: MyTheme.font_grey, fontSize: 14),
@@ -447,43 +450,44 @@ class _ProfileState extends State<Profile> {
               : Container(),
           AddonConfig.refund_addon_installed
               ? InkWell(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) {
-                    return RefundRequest();
-                  }));
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: Row(
-                children: [
-                  Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.pinkAccent,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(
-                          Icons.double_arrow,
-                          color: Colors.white,
-                        ),
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text(
-                      AppLocalizations.of(context).profile_screen_refund_requests,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: MyTheme.font_grey, fontSize: 14),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return RefundRequest();
+                    }));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: Row(
+                      children: [
+                        Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.pinkAccent,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.double_arrow,
+                                color: Colors.white,
+                              ),
+                            )),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Text(
+                            AppLocalizations.of(context)
+                                .profile_screen_refund_requests,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: MyTheme.font_grey, fontSize: 14),
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
-              ),
-            ),
-          )
+                  ),
+                )
               : Container(),
         ],
       ),
@@ -494,28 +498,28 @@ class _ProfileState extends State<Profile> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text(
-                _cartCounterString,
-                style: TextStyle(
-                    fontSize: 16,
-                    color: MyTheme.font_grey,
-                    fontWeight: FontWeight.w600),
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.only(top: 4.0),
-                child: Text(
-                  AppLocalizations.of(context).profile_screen_in_your_cart,
-                  style: TextStyle(
-                    color: MyTheme.medium_grey,
-                  ),
-                )),
-          ],
-        ),
+        // Column(
+        //   children: [
+        //     Padding(
+        //       padding: const EdgeInsets.only(top: 8.0),
+        //       child: Text(
+        //         _cartCounterString,
+        //         style: TextStyle(
+        //             fontSize: 16,
+        //             color: MyTheme.font_grey,
+        //             fontWeight: FontWeight.w600),
+        //       ),
+        //     ),
+        //     Padding(
+        //         padding: const EdgeInsets.only(top: 4.0),
+        //         child: Text(
+        //           AppLocalizations.of(context).profile_screen_in_your_cart,
+        //           style: TextStyle(
+        //             color: MyTheme.medium_grey,
+        //           ),
+        //         )),
+        //   ],
+        // ),
         Column(
           children: [
             Padding(
@@ -531,7 +535,7 @@ class _ProfileState extends State<Profile> {
             Padding(
                 padding: const EdgeInsets.only(top: 4.0),
                 child: Text(
-                  AppLocalizations.of(context).profile_screen_in_wishlist,
+                  AppLocalizations.of(context).profile_screen_payments,
                   style: TextStyle(
                     color: MyTheme.medium_grey,
                   ),
@@ -553,7 +557,7 @@ class _ProfileState extends State<Profile> {
             Padding(
                 padding: const EdgeInsets.only(top: 4.0),
                 child: Text(
-                  AppLocalizations.of(context).profile_screen_in_ordered,
+                  AppLocalizations.of(context).profile_screen_my_orders,
                   style: TextStyle(
                     color: MyTheme.medium_grey,
                   ),
@@ -648,7 +652,7 @@ class _ProfileState extends State<Profile> {
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
-backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       centerTitle: true,
       leading: GestureDetector(
         child: widget.show_back_button

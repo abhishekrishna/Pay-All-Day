@@ -93,7 +93,7 @@ class AddressRepository {
   }
 
   Future<AddressUpdateLocationResponse> getAddressUpdateLocationResponse(
-    @required int id,
+    int id,
     @required double latitude,
     @required double longitude,
   ) async {
@@ -117,7 +117,7 @@ class AddressRepository {
   }
 
   Future<AddressMakeDefaultResponse> getAddressMakeDefaultResponse(
-    @required int id,
+    int id,
   ) async {
     var post_body = jsonEncode({
       "user_id": "${user_id.$}",

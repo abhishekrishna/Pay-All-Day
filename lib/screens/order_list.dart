@@ -1,3 +1,4 @@
+import 'package:active_ecommerce_flutter/screens/home.dart';
 import 'package:active_ecommerce_flutter/screens/order_details.dart';
 import 'package:active_ecommerce_flutter/screens/main.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,6 @@ import 'package:active_ecommerce_flutter/helpers/shared_value_helper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:one_context/one_context.dart';
 
-
 class PaymentStatus {
   String option_key;
   String name;
@@ -18,9 +18,12 @@ class PaymentStatus {
 
   static List<PaymentStatus> getPaymentStatusList() {
     return <PaymentStatus>[
-      PaymentStatus('', AppLocalizations.of(OneContext().context).order_list_screen_all),
-      PaymentStatus('paid', AppLocalizations.of(OneContext().context).order_list_screen_paid),
-      PaymentStatus('unpaid', AppLocalizations.of(OneContext().context).order_list_screen_unpaid),
+      PaymentStatus(
+          '', AppLocalizations.of(OneContext().context).order_list_screen_all),
+      PaymentStatus('paid',
+          AppLocalizations.of(OneContext().context).order_list_screen_paid),
+      PaymentStatus('unpaid',
+          AppLocalizations.of(OneContext().context).order_list_screen_unpaid),
     ];
   }
 }
@@ -33,10 +36,20 @@ class DeliveryStatus {
 
   static List<DeliveryStatus> getDeliveryStatusList() {
     return <DeliveryStatus>[
-      DeliveryStatus('', AppLocalizations.of(OneContext().context).order_list_screen_all),
-      DeliveryStatus('confirmed', AppLocalizations.of(OneContext().context).order_list_screen_confirmed),
-      DeliveryStatus('on_delivery', AppLocalizations.of(OneContext().context).order_list_screen_on_delivery),
-      DeliveryStatus('delivered', AppLocalizations.of(OneContext().context).order_list_screen_delivered),
+      DeliveryStatus(
+          '', AppLocalizations.of(OneContext().context).order_list_screen_all),
+      DeliveryStatus(
+          'confirmed',
+          AppLocalizations.of(OneContext().context)
+              .order_list_screen_confirmed),
+      DeliveryStatus(
+          'on_delivery',
+          AppLocalizations.of(OneContext().context)
+              .order_list_screen_on_delivery),
+      DeliveryStatus(
+          'delivered',
+          AppLocalizations.of(OneContext().context)
+              .order_list_screen_delivered),
     ];
   }
 }
@@ -214,7 +227,7 @@ class _OrderListState extends State<OrderList> {
           textDirection:
               app_language_rtl.$ ? TextDirection.rtl : TextDirection.ltr,
           child: Scaffold(
-              backgroundColor: Colors.white,
+              backgroundColor: MyTheme.white,
               appBar: buildAppBar(context),
               body: Stack(
                 children: [
@@ -235,7 +248,8 @@ class _OrderListState extends State<OrderList> {
       child: Center(
         child: Text(_totalData == _orderList.length
             ? AppLocalizations.of(context).order_list_screen_no_more_orders
-            : AppLocalizations.of(context).order_list_screen_loading_more_orders),
+            : AppLocalizations.of(context)
+                .order_list_screen_loading_more_orders),
       ),
     );
   }
@@ -248,11 +262,12 @@ class _OrderListState extends State<OrderList> {
         children: [
           Container(
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: MyTheme.white,
                 border: Border.symmetric(
-                    vertical: BorderSide(color: MyTheme.light_grey, width: .5),
-                    horizontal:
-                        BorderSide(color: MyTheme.light_grey, width: 1))),
+                    vertical:
+                        BorderSide(color: MyTheme.soft_accent_color, width: .5),
+                    horizontal: BorderSide(
+                        color: MyTheme.soft_accent_color, width: 1))),
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             height: 36,
             width: MediaQuery.of(context).size.width * .3,
@@ -300,11 +315,12 @@ class _OrderListState extends State<OrderList> {
           ),
           Container(
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: MyTheme.white,
                 border: Border.symmetric(
-                    vertical: BorderSide(color: MyTheme.light_grey, width: .5),
-                    horizontal:
-                        BorderSide(color: MyTheme.light_grey, width: 1))),
+                    vertical:
+                        BorderSide(color: MyTheme.soft_accent_color, width: .5),
+                    horizontal: BorderSide(
+                        color: MyTheme.soft_accent_color, width: 1))),
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             height: 36,
             width: MediaQuery.of(context).size.width * .35,
@@ -378,7 +394,7 @@ class _OrderListState extends State<OrderList> {
               onPressed: () {
                 if (widget.from_checkout) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return Main();
+                    return Home();
                   }));
                 } else {
                   return Navigator.of(context).pop();
@@ -423,7 +439,7 @@ class _OrderListState extends State<OrderList> {
     } else if (_orderList.length > 0) {
       return RefreshIndicator(
         color: MyTheme.accent_color,
-        backgroundColor: Colors.white,
+        backgroundColor: MyTheme.soft_accent_color,
         displacement: 0,
         onRefresh: _onRefresh,
         child: SingleChildScrollView(
@@ -455,7 +471,8 @@ class _OrderListState extends State<OrderList> {
         ),
       );
     } else if (_totalData == 0) {
-      return Center(child: Text(AppLocalizations.of(context).common_no_data_available));
+      return Center(
+          child: Text(AppLocalizations.of(context).common_no_data_available));
     } else {
       return Container(); // should never be happening
     }
@@ -464,7 +481,7 @@ class _OrderListState extends State<OrderList> {
   Card buildOrderListItemCard(int index) {
     return Card(
       shape: RoundedRectangleBorder(
-        side: new BorderSide(color: MyTheme.light_grey, width: 1.0),
+        side: new BorderSide(color: MyTheme.soft_accent_color, width: 1.0),
         borderRadius: BorderRadius.circular(8.0),
       ),
       elevation: 0.0,

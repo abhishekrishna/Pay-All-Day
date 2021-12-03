@@ -16,7 +16,7 @@ class ShimmerHelper {
     );
   }
 
-  buildListShimmer({item_count = 10,item_height = 100.0}) {
+  buildListShimmer({item_count = 10, item_height = 100.0}) {
     return ListView.builder(
       itemCount: item_count,
       scrollDirection: Axis.vertical,
@@ -53,7 +53,7 @@ class ShimmerHelper {
             child: Container(
               height: 120,
               width: double.infinity,
-              color: Colors.white,
+              color: Colors.blue.shade200,
             ),
           ),
         );

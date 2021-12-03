@@ -53,6 +53,12 @@ dependencies:
   package_info: ^2.0.2
   intl_phone_number_input: ^0.7.0+2
   flutter_chat_bubble: ^2.0.0
+  pin_code_fields:
+  shape_of_view:
+  animated_bottom_navigation_bar:
+  auto_size_text:
+  fluttercontactpicker:
+  qr_code_scanner:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.3
@@ -72,7 +78,6 @@ dependencies:
   flutter_typeahead: ^3.2.1
   photo_view: ^0.13.0
   intl: ^0.17.0
-  curved_navigation_bar:
 
 dev_dependencies:
   flutter_test:

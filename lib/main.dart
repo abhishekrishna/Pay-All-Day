@@ -52,7 +52,7 @@ main() async {
   });
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
+    // statusBarColor: Colors.indigo[900],
     systemNavigationBarDividerColor: Colors.transparent,
   ));
 

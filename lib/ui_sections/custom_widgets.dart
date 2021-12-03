@@ -45,7 +45,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(70, 15, 60, 15),
+          padding: const EdgeInsets.fromLTRB(60, 15, 50, 15),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

@@ -1,7 +1,9 @@
-import 'package:active_ecommerce_flutter/my_theme.dart';
+// import 'package:active_ecommerce_flutter/my_theme.dart';
+import 'package:active_ecommerce_flutter/ui_sections/custom_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:active_ecommerce_flutter/custom/input_decorations.dart';
+// import 'package:active_ecommerce_flutter/custom/input_decorations.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:active_ecommerce_flutter/screens/login.dart';
 import 'package:active_ecommerce_flutter/repositories/auth_repository.dart';
 import 'package:active_ecommerce_flutter/custom/toast_component.dart';
@@ -10,9 +12,9 @@ import 'package:active_ecommerce_flutter/helpers/shared_value_helper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Otp extends StatefulWidget {
-  Otp({Key key, this.verify_by = "email", this.user_id}) : super(key: key);
+  Otp(this.verify_by, this.phone);
   final String verify_by;
-  final int user_id;
+  final String phone;
 
   @override
   _OtpState createState() => _OtpState();
@@ -39,7 +41,7 @@ class _OtpState extends State<Otp> {
 
   onTapResend() async {
     var resendCodeResponse = await AuthRepository()
-        .getResendCodeResponse(widget.user_id, widget.verify_by);
+        .getResendCodeResponse(widget.phone, widget.verify_by);
 
     if (resendCodeResponse.result == false) {
       ToastComponent.showDialog(resendCodeResponse.message, context,
@@ -63,7 +65,7 @@ class _OtpState extends State<Otp> {
     }
 
     var confirmCodeResponse =
-        await AuthRepository().getConfirmCodeResponse(widget.user_id, code);
+        await AuthRepository().getConfirmCodeResponse(widget.phone, code);
 
     if (confirmCodeResponse.result == false) {
       ToastComponent.showDialog(confirmCodeResponse.message, context,
@@ -92,131 +94,119 @@ class _OtpState extends State<Otp> {
         backgroundColor: Colors.white,
         body: Stack(
           children: [
-            Container(
-              width: _screen_width * (3 / 4),
-              child: Image.asset(
-                  "assets/splash_login_registration_background_image.png"),
-            ),
+            // Container(
+            //   width: _screen_width * (3 / 4),
+            //   child: Image.asset(
+            //       "assets/splash_login_registration_background_image.png"),
+            // ),
             Container(
               width: double.infinity,
               child: SingleChildScrollView(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 40.0, bottom: 15),
-                    child: Container(
-                      width: 75,
-                      height: 75,
-                      child: Image.asset(
-                          'assets/login_registration_form_logo.png'),
+                  child:
+                      Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          // crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                    SizedBox(
+                      height: _screen_height * 0.1,
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: Text(
-                      "${AppLocalizations.of(context).otp_screen_verify_your} " +
-                          (_verify_by == "email"
-                              ? AppLocalizations.of(context)
-                                  .otp_screen_email_account
-                              : AppLocalizations.of(context)
-                                  .otp_screen_phone_number),
+                    Center(
+                        child: Image.asset(
+                      "assets/verifyotp.png",
+                      scale: 0.9,
+                    )),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    const Text(
+                      "Verification",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Text(
+                      "Enter OTP Code sent to your number \n  ",
                       style: TextStyle(
-                          color: MyTheme.accent_color,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                          color: Colors.grey),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: Container(
-                        width: _screen_width * (3 / 4),
-                        child: _verify_by == "email"
-                            ? Text(
-                                AppLocalizations.of(context)
-                                    .otp_screen_enter_verification_code_to_email,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: MyTheme.dark_grey, fontSize: 14))
-                            : Text(
-                                AppLocalizations.of(context)
-                                    .otp_screen_enter_verification_code_to_phone,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: MyTheme.dark_grey, fontSize: 14))),
-                  ),
-                  Container(
-                    width: _screen_width * (3 / 4),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Container(
-                                height: 36,
-                                child: TextField(
-                                  controller: _verificationCodeController,
-                                  autofocus: false,
-                                  decoration:
-                                      InputDecorations.buildInputDecoration_1(
-                                          hint_text: "A X B 4 J H"),
-                                ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Card(
+                        child: Container(
+                      height: _screen_height * 0.5,
+                      decoration: const BoxDecoration(color: Colors.white10),
+                      child: Padding(
+                        padding: const EdgeInsets.all(40),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            PinCodeTextField(
+                              enablePinAutofill: true,
+                              length: 4,
+                              obscureText: false,
+                              animationType: AnimationType.fade,
+                              pinTheme: PinTheme(
+                                activeColor: Colors.white,
+                                shape: PinCodeFieldShape.box,
+                                borderRadius: BorderRadius.circular(5),
+                                fieldHeight: 50,
+                                fieldWidth: 60,
+                                activeFillColor: Colors.white,
                               ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 40.0),
-                          child: Container(
-                            height: 45,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: MyTheme.textfield_grey, width: 1),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(12.0))),
-                            child: FlatButton(
-                              minWidth: MediaQuery.of(context).size.width,
-                              //height: 50,
-                              color: MyTheme.accent_color,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(12.0))),
-                              child: Text(
-                                AppLocalizations.of(context).otp_screen_confirm,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              onPressed: () {
-                                onPressConfirm();
+                              animationDuration:
+                                  const Duration(milliseconds: 300),
+                              controller: _verificationCodeController,
+                              onCompleted: (v) {
+                                // ignore: avoid_print
+                                print("Completed");
                               },
+                              onChanged: (value) {
+                                // ignore: avoid_print
+                                print(value);
+                                // setState(() {
+                                //   currentText = value;
+                                // });
+                              },
+                              beforeTextPaste: (text) {
+                                // ignore: avoid_print
+                                print("Allowing to paste $text");
+                                //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
+                                //but you can show anything you want here, like your pop up saying wrong paste format or etc
+                                return true;
+                              },
+                              appContext: context,
                             ),
-                          ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            CustomButton(Icons.app_registration, "verify otp",
+                                onPressConfirm),
+                            CustomButton(Icons.sms, "resend otp", onTapResend),
+                            // Padding(
+                            //   padding: const EdgeInsets.only(top: 100),
+                            //   child: InkWell(
+                            //     onTap: () {
+                            //       onTapResend();
+                            //     },
+                            //     child: Text(
+                            //         AppLocalizations.of(context)
+                            //             .otp_screen_resend_code,
+                            //         textAlign: TextAlign.center,
+                            //         style: TextStyle(
+                            //             color: MyTheme.accent_color,
+                            //             decoration: TextDecoration.underline,
+                            //             fontSize: 13)),
+                            //   ),
+                            // ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 100),
-                    child: InkWell(
-                      onTap: () {
-                        onTapResend();
-                      },
-                      child: Text(
-                          AppLocalizations.of(context).otp_screen_resend_code,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: MyTheme.accent_color,
-                              decoration: TextDecoration.underline,
-                              fontSize: 13)),
-                    ),
-                  ),
-                ],
-              )),
+                      ),
+                    ))
+                  ])),
             )
           ],
         ),

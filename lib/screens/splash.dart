@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:active_ecommerce_flutter/app_config.dart';
+import 'package:active_ecommerce_flutter/helpers/responsive_helper.dart';
 import 'package:active_ecommerce_flutter/my_theme.dart';
 import 'package:active_ecommerce_flutter/screens/main.dart';
 import 'package:flutter/material.dart';
@@ -67,6 +68,7 @@ class _SplashState extends State<Splash> {
             fontWeight: FontWeight.bold, fontSize: 14.0, color: Colors.white),
       ),
       useLoader: false,
+
       loadingText: Text(
         AppConfig.copyright_text,
         style: TextStyle(
@@ -75,11 +77,14 @@ class _SplashState extends State<Splash> {
           color: Colors.white,
         ),
       ),
-      image: Image.asset("assets/logo.png"),
+      image: Image.asset(
+        "assets/logocol.png",
+        height: double.infinity,
+      ),
       // backgroundImage:
       //     Image.asset("assets/splash_login_registration_background_image.png"),
       backgroundColor: MyTheme.splash_screen_color,
-      photoSize: 60.0,
+      photoSize: 100.0,
       backgroundPhotoSize: 140.0,
     );
   }
@@ -294,6 +299,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
     return Directionality(
       textDirection: app_language_rtl.$ ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: InkWell(
           onTap: widget.onClick,
           child: Stack(

@@ -29,11 +29,11 @@ class CategoryList extends StatefulWidget {
 }
 
 class _CategoryListState extends State<CategoryList> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-     return Directionality(
+    return Directionality(
       textDirection: app_language_rtl.$ ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
           key: _scaffoldKey,
@@ -81,7 +81,7 @@ class _CategoryListState extends State<CategoryList> {
                     child: Image.asset(
                       'assets/hamburger.png',
                       height: 16,
-                      color: MyTheme.dark_grey,
+                      color: MyTheme.accent_color,
                     ),
                   ),
                 ),
@@ -104,7 +104,9 @@ class _CategoryListState extends State<CategoryList> {
 
   String getAppBarTitle() {
     String name = widget.parent_category_name == ""
-        ? (widget.is_top_category ? AppLocalizations.of(context).category_list_screen_top_categories : AppLocalizations.of(context).category_list_screen_categories)
+        ? (widget.is_top_category
+            ? AppLocalizations.of(context).category_list_screen_top_categories
+            : AppLocalizations.of(context).category_list_screen_categories)
         : widget.parent_category_name;
 
     return name;
@@ -209,7 +211,7 @@ class _CategoryListState extends State<CategoryList> {
   Card buildCategoryItemCard(categoryResponse, index) {
     return Card(
       shape: RoundedRectangleBorder(
-        side: new BorderSide(color: MyTheme.light_grey, width: 1.0),
+        side: new BorderSide(color: MyTheme.soft_accent_color, width: 1.0),
         borderRadius: BorderRadius.circular(16.0),
       ),
       elevation: 0.0,
@@ -267,13 +269,16 @@ class _CategoryListState extends State<CategoryList> {
                           }));
                         } else {
                           ToastComponent.showDialog(
-                              AppLocalizations.of(context).category_list_screen_no_subcategories, context,
+                              AppLocalizations.of(context)
+                                  .category_list_screen_no_subcategories,
+                              context,
                               gravity: Toast.CENTER,
                               duration: Toast.LENGTH_LONG);
                         }
                       },
                       child: Text(
-                        AppLocalizations.of(context).category_list_screen_view_subcategories,
+                        AppLocalizations.of(context)
+                            .category_list_screen_view_subcategories,
                         textAlign: TextAlign.left,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
@@ -305,7 +310,8 @@ class _CategoryListState extends State<CategoryList> {
                         }));
                       },
                       child: Text(
-                        AppLocalizations.of(context).category_list_screen_view_products,
+                        AppLocalizations.of(context)
+                            .category_list_screen_view_products,
                         textAlign: TextAlign.left,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
@@ -349,7 +355,10 @@ class _CategoryListState extends State<CategoryList> {
                       borderRadius:
                           const BorderRadius.all(Radius.circular(8.0))),
                   child: Text(
-                    AppLocalizations.of(context).category_list_screen_all_products_of + " " + widget.parent_category_name,
+                    AppLocalizations.of(context)
+                            .category_list_screen_all_products_of +
+                        " " +
+                        widget.parent_category_name,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 13,

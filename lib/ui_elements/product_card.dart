@@ -5,7 +5,6 @@ import 'package:active_ecommerce_flutter/app_config.dart';
 import 'package:active_ecommerce_flutter/helpers/shared_value_helper.dart';
 
 class ProductCard extends StatefulWidget {
-
   int id;
   String image;
   String name;
@@ -13,7 +12,15 @@ class ProductCard extends StatefulWidget {
   String stroked_price;
   bool has_discount;
 
-  ProductCard({Key key,this.id, this.image, this.name, this.main_price,this.stroked_price,this.has_discount}) : super(key: key);
+  ProductCard(
+      {Key key,
+      this.id,
+      this.image,
+      this.name,
+      this.main_price,
+      this.stroked_price,
+      this.has_discount})
+      : super(key: key);
 
   @override
   _ProductCardState createState() => _ProductCardState();
@@ -22,17 +29,19 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
-    print((MediaQuery.of(context).size.width - 48 ) / 2);
+    print((MediaQuery.of(context).size.width - 48) / 2);
     return InkWell(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return ProductDetails(id: widget.id,);
+          return ProductDetails(
+            id: widget.id,
+          );
         }));
       },
       child: Card(
-         //clipBehavior: Clip.antiAliasWithSaveLayer,
+        //clipBehavior: Clip.antiAliasWithSaveLayer,
         shape: RoundedRectangleBorder(
-          side: new BorderSide(color: MyTheme.light_grey, width: 1.0),
+          side: new BorderSide(color: MyTheme.soft_accent_color, width: 1.0),
           borderRadius: BorderRadius.circular(16.0),
         ),
         elevation: 0.0,
@@ -43,9 +52,9 @@ class _ProductCardState extends State<ProductCard> {
               Container(
                   width: double.infinity,
                   //height: 158,
-                  height: (( MediaQuery.of(context).size.width - 28 ) / 2) + 2,
+                  height: ((MediaQuery.of(context).size.width - 28) / 2) + 2,
                   child: ClipRRect(
-                    clipBehavior: Clip.hardEdge,
+                      clipBehavior: Clip.hardEdge,
                       borderRadius: BorderRadius.vertical(
                           top: Radius.circular(16), bottom: Radius.zero),
                       child: FadeInImage.assetNetwork(
@@ -65,10 +74,10 @@ class _ProductCardState extends State<ProductCard> {
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
                         style: TextStyle(
-                            color: MyTheme.font_grey,
+                            color: MyTheme.accent_color,
                             fontSize: 14,
                             height: 1.2,
-                            fontWeight: FontWeight.w400),
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                     Padding(
@@ -84,20 +93,22 @@ class _ProductCardState extends State<ProductCard> {
                             fontWeight: FontWeight.w600),
                       ),
                     ),
-                   widget.has_discount ? Padding(
-                      padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
-                      child: Text(
-                        widget.stroked_price,
-                        textAlign: TextAlign.left,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        style: TextStyle(
-                          decoration:TextDecoration.lineThrough,
-                            color: MyTheme.medium_grey,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ):Container(),
+                    widget.has_discount
+                        ? Padding(
+                            padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
+                            child: Text(
+                              widget.stroked_price,
+                              textAlign: TextAlign.left,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: TextStyle(
+                                  decoration: TextDecoration.lineThrough,
+                                  color: MyTheme.medium_grey,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          )
+                        : Container(),
                   ],
                 ),
               ),

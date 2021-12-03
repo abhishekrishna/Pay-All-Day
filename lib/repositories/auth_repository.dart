@@ -20,7 +20,7 @@ class AuthRepository {
       // "identity_matrix": AppConfig.purchase_code
     });
 
-    Uri url = Uri.parse("${AppConfig.BASE_URL}/auth/login");
+    Uri url = Uri.parse("${AppConfig.BASE_URL_2}/auth/login");
     final response = await http.post(url,
         headers: {
           "Content-Type": "application/json",
@@ -62,17 +62,19 @@ class AuthRepository {
   }
 
   Future<SignupResponse> getSignupResponse(
-      @required String name,
-      @required String email_or_phone,
-      @required String password,
-      @required String passowrd_confirmation,
-      @required String register_by) async {
+    String name,
+    String phone,
+    String password,
+    String referral,
+    String email,
+  ) async {
     var post_body = jsonEncode({
-      "name": "$name",
-      "email_or_phone": "${email_or_phone}",
-      "password": "$password",
-      "password_confirmation": "${passowrd_confirmation}",
-      "register_by": "$register_by"
+      "user_name": "$name",
+      "user_mobile": "$phone",
+      "user_password": "$password",
+      "user_referral": "$referral",
+      "user_email": "$email",
+      // "register_by": "$register_by"
     });
 
     Uri url = Uri.parse("${AppConfig.BASE_URL}/auth/signup");
@@ -87,15 +89,15 @@ class AuthRepository {
   }
 
   Future<ResendCodeResponse> getResendCodeResponse(
-      @required int user_id, @required String verify_by) async {
+      String phone, String verify_by) async {
     var post_body =
-        jsonEncode({"user_id": "$user_id", "register_by": "$verify_by"});
+        jsonEncode({"user_mobile": "$phone", "verify_by": "$verify_by"});
 
     Uri url = Uri.parse("${AppConfig.BASE_URL}/auth/resend_code");
     final response = await http.post(url,
         headers: {
           "Content-Type": "application/json",
-          "App-Language": app_language.$,
+          // "App-Language": app_language.$,
         },
         body: post_body);
 
@@ -103,9 +105,9 @@ class AuthRepository {
   }
 
   Future<ConfirmCodeResponse> getConfirmCodeResponse(
-      @required int user_id, @required String verification_code) async {
+      phone, verification_code) async {
     var post_body = jsonEncode(
-        {"user_id": "$user_id", "verification_code": "$verification_code"});
+        {"user_mobile": "$phone", "verification_code": "$verification_code"});
 
     Uri url = Uri.parse("${AppConfig.BASE_URL}/auth/confirm_code");
     final response = await http.post(url,

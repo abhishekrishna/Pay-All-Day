@@ -1,4 +1,5 @@
 import 'package:active_ecommerce_flutter/helpers/responsive_helper.dart';
+import 'package:active_ecommerce_flutter/my_theme.dart';
 import 'package:active_ecommerce_flutter/screens/change_language.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -129,19 +130,17 @@ class _MainDrawerState extends State<MainDrawer> {
                     : Text(
                         AppLocalizations.of(context).main_drawer_not_logged_in,
                         style: TextStyle(
-                            color: Color.fromRGBO(153, 153, 153, 1),
-                            fontSize: 14)),
+                            color: MyTheme.black_color, fontSize: 14)),
                 Divider(),
                 ListTile(
                     visualDensity: VisualDensity(horizontal: -4, vertical: -4),
                     leading: Image.asset("assets/language.png",
-                        height: 16, color: Color.fromRGBO(153, 153, 153, 1)),
+                        height: 16, color: MyTheme.black_color),
                     title: Text(
                         AppLocalizations.of(context)
                             .main_drawer_change_language,
                         style: TextStyle(
-                            color: Color.fromRGBO(153, 153, 153, 1),
-                            fontSize: 14)),
+                            color: MyTheme.black_color, fontSize: 14)),
                     onTap: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
@@ -151,11 +150,10 @@ class _MainDrawerState extends State<MainDrawer> {
                 ListTile(
                     visualDensity: VisualDensity(horizontal: -4, vertical: -4),
                     leading: Image.asset("assets/home.png",
-                        height: 16, color: Color.fromRGBO(153, 153, 153, 1)),
+                        height: 16, color: MyTheme.black_color),
                     title: Text(AppLocalizations.of(context).main_drawer_home,
                         style: TextStyle(
-                            color: Color.fromRGBO(153, 153, 153, 1),
-                            fontSize: 14)),
+                            color: MyTheme.black_color, fontSize: 14)),
                     onTap: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
@@ -167,13 +165,11 @@ class _MainDrawerState extends State<MainDrawer> {
                         visualDensity:
                             VisualDensity(horizontal: -4, vertical: -4),
                         leading: Image.asset("assets/profile.png",
-                            height: 16,
-                            color: Color.fromRGBO(153, 153, 153, 1)),
+                            height: 16, color: MyTheme.black_color),
                         title: Text(
                             AppLocalizations.of(context).main_drawer_profile,
                             style: TextStyle(
-                                color: Color.fromRGBO(153, 153, 153, 1),
-                                fontSize: 14)),
+                                color: MyTheme.black_color, fontSize: 14)),
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
@@ -186,12 +182,11 @@ class _MainDrawerState extends State<MainDrawer> {
                         visualDensity:
                             VisualDensity(horizontal: -4, vertical: -4),
                         leading: Icon(Icons.payment,
-                            size: 20, color: Color.fromRGBO(153, 153, 153, 1)),
+                            size: 20, color: MyTheme.black_color),
                         title: Text(
                             AppLocalizations.of(context).payment_history,
                             style: TextStyle(
-                                color: Color.fromRGBO(153, 153, 153, 1),
-                                fontSize: 14)),
+                                color: MyTheme.black_color, fontSize: 14)),
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
@@ -204,13 +199,11 @@ class _MainDrawerState extends State<MainDrawer> {
                         visualDensity:
                             VisualDensity(horizontal: -4, vertical: -4),
                         leading: Image.asset("assets/heart.png",
-                            height: 16,
-                            color: Color.fromRGBO(153, 153, 153, 1)),
+                            height: 16, color: MyTheme.black_color),
                         title: Text(
                             AppLocalizations.of(context).terms_and_conditions,
                             style: TextStyle(
-                                color: Color.fromRGBO(153, 153, 153, 1),
-                                fontSize: 14)),
+                                color: MyTheme.black_color, fontSize: 14)),
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
@@ -223,11 +216,10 @@ class _MainDrawerState extends State<MainDrawer> {
                         visualDensity:
                             VisualDensity(horizontal: -4, vertical: -4),
                         leading: Icon(Icons.privacy_tip,
-                            size: 20, color: Color.fromRGBO(153, 153, 153, 1)),
+                            size: 20, color: MyTheme.black_color),
                         title: Text(AppLocalizations.of(context).privacy_policy,
                             style: TextStyle(
-                                color: Color.fromRGBO(153, 153, 153, 1),
-                                fontSize: 14)),
+                                color: MyTheme.black_color, fontSize: 14)),
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
@@ -240,13 +232,11 @@ class _MainDrawerState extends State<MainDrawer> {
                         visualDensity:
                             VisualDensity(horizontal: -4, vertical: -4),
                         leading: Image.asset("assets/wallet.png",
-                            height: 16,
-                            color: Color.fromRGBO(153, 153, 153, 1)),
+                            height: 16, color: MyTheme.black_color),
                         title: Text(
                             AppLocalizations.of(context).main_drawer_wallet,
                             style: TextStyle(
-                                color: Color.fromRGBO(153, 153, 153, 1),
-                                fontSize: 14)),
+                                color: MyTheme.black_color, fontSize: 14)),
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
@@ -260,13 +250,11 @@ class _MainDrawerState extends State<MainDrawer> {
                         visualDensity:
                             VisualDensity(horizontal: -4, vertical: -4),
                         leading: Image.asset("assets/login.png",
-                            height: 16,
-                            color: Color.fromRGBO(153, 153, 153, 1)),
+                            height: 16, color: MyTheme.black_color),
                         title: Text(
                             AppLocalizations.of(context).main_drawer_login,
                             style: TextStyle(
-                                color: Color.fromRGBO(153, 153, 153, 1),
-                                fontSize: 14)),
+                                color: MyTheme.black_color, fontSize: 14)),
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
@@ -279,13 +267,11 @@ class _MainDrawerState extends State<MainDrawer> {
                         visualDensity:
                             VisualDensity(horizontal: -4, vertical: -4),
                         leading: Image.asset("assets/logout.png",
-                            height: 16,
-                            color: Color.fromRGBO(153, 153, 153, 1)),
+                            height: 16, color: MyTheme.black_color),
                         title: Text(
                             AppLocalizations.of(context).main_drawer_logout,
                             style: TextStyle(
-                                color: Color.fromRGBO(153, 153, 153, 1),
-                                fontSize: 14)),
+                                color: MyTheme.black_color, fontSize: 14)),
                         onTap: () {
                           onTapLogout(context);
                         })
