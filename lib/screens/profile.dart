@@ -1,3 +1,5 @@
+import 'package:active_ecommerce_flutter/data_model/user_profile_response.dart';
+import 'package:active_ecommerce_flutter/repositories/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:active_ecommerce_flutter/my_theme.dart';
 import 'package:active_ecommerce_flutter/ui_sections/drawer.dart';
@@ -34,6 +36,7 @@ class _ProfileState extends State<Profile> {
   String _wishlistCounterString = "...";
   int _orderCounter = 0;
   String _orderCounterString = "...";
+  UserData userData = UserData();
 
   @override
   void initState() {
@@ -61,7 +64,14 @@ class _ProfileState extends State<Profile> {
   }
 
   fetchAll() {
-    fetchCounters();
+    // fetchCounters();
+    fetchUserDetails();
+  }
+
+  fetchUserDetails() async {
+    var userProfileResponse = await UserDataRepository().getUserDataResponse();
+    userData = userProfileResponse;
+    print(userData.email);
   }
 
   fetchCounters() async {
@@ -587,7 +597,7 @@ class _ProfileState extends State<Profile> {
                 borderRadius: BorderRadius.all(Radius.circular(100.0)),
                 child: FadeInImage.assetNetwork(
                   placeholder: 'assets/placeholder.png',
-                  image: AppConfig.BASE_PATH + "${avatar_original.$}",
+                  image: userData.avatar ?? "",
                   fit: BoxFit.fill,
                 )),
           ),

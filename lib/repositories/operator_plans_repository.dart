@@ -12,12 +12,10 @@ class OperatorPlansRepository {
       String rechargeOperatorCode,
       String rechargeOperatorCircle) async {
     var post_body = jsonEncode({
-      {
-        "recharge_phone": "$phoneNumber",
-        "recharge_service": "$rechargeService",
-        "recharge_operator_code": "$rechargeOperatorCode",
-        "recharge_operator_circel": "$rechargeOperatorCircle"
-      }
+      "recharge_phone": "$phoneNumber",
+      "recharge_service": "$rechargeService",
+      "recharge_operator_code": "$rechargeOperatorCode",
+      "recharge_operator_circel": "$rechargeOperatorCircle"
     });
 
     Uri url = Uri.parse("${AppConfig.BASE_URL_2}/recharge/mobile-plans");
@@ -29,7 +27,7 @@ class OperatorPlansRepository {
         },
         body: post_body);
 
-    print("hello" + response.body.toString());
+    print("hell" + response.body);
     return plansDataFromJson(response.body);
   }
 }

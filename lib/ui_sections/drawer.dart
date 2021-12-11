@@ -1,6 +1,7 @@
 import 'package:active_ecommerce_flutter/helpers/responsive_helper.dart';
 import 'package:active_ecommerce_flutter/my_theme.dart';
 import 'package:active_ecommerce_flutter/screens/change_language.dart';
+import 'package:active_ecommerce_flutter/ui_sections/sendMoneyRow/passbook.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -240,7 +241,7 @@ class _MainDrawerState extends State<MainDrawer> {
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
-                            return Wallet();
+                            return Passbook();
                           }));
                         })
                     : Container(),

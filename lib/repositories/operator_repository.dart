@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:active_ecommerce_flutter/helpers/shared_value_helper.dart';
 
 class OperatorRepository {
-  Future<OperatorData> getOpeartorDataResponse(
+  Future<FindMobileOperator> getOpeartorDataResponse(
     String phoneNumber,
     String rechargeService,
     String rechargeServiceType,
@@ -29,6 +29,6 @@ class OperatorRepository {
         body: post_body);
 
     print("hello" + response.body.toString());
-    return operatorDataFromJson(response.body);
+    return findMobileOperatorFromJson(response.body);
   }
 }

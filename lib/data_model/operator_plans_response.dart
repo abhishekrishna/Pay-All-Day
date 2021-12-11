@@ -49,7 +49,7 @@ class Datum {
   String operatorId;
   String circleId;
   String rechargeAmount;
-  String rechargeTalktime;
+  RechargeTalktime rechargeTalktime;
   String rechargeValidity;
   String rechargeShortDesc;
   String rechargeLongDesc;
@@ -60,7 +60,7 @@ class Datum {
         operatorId: json["operator_id"],
         circleId: json["circle_id"],
         rechargeAmount: json["recharge_amount"],
-        rechargeTalktime: json["recharge_talktime"],
+        rechargeTalktime: rechargeTalktimeValues.map[json["recharge_talktime"]],
         rechargeValidity: json["recharge_validity"],
         rechargeShortDesc: json["recharge_short_desc"],
         rechargeLongDesc: json["recharge_long_desc"],
@@ -72,10 +72,44 @@ class Datum {
         "operator_id": operatorId,
         "circle_id": circleId,
         "recharge_amount": rechargeAmount,
-        "recharge_talktime": rechargeTalktime,
+        "recharge_talktime": rechargeTalktimeValues.reverse[rechargeTalktime],
         "recharge_validity": rechargeValidity,
         "recharge_short_desc": rechargeShortDesc,
         "recharge_long_desc": rechargeLongDesc,
         "recharge_type": rechargeType,
       };
+}
+
+enum RechargeTalktime {
+  THE_747,
+  EMPTY,
+  THE_1495,
+  THE_3937,
+  THE_8175,
+  RECHARGE_TALKTIME,
+  THE_84446
+}
+
+final rechargeTalktimeValues = EnumValues({
+  "-": RechargeTalktime.EMPTY,
+  "": RechargeTalktime.RECHARGE_TALKTIME,
+  "14.95": RechargeTalktime.THE_1495,
+  "39.37": RechargeTalktime.THE_3937,
+  "7.47": RechargeTalktime.THE_747,
+  "81.75": RechargeTalktime.THE_8175,
+  "844.46": RechargeTalktime.THE_84446
+});
+
+class EnumValues<T> {
+  Map<String, T> map;
+  Map<T, String> reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    if (reverseMap == null) {
+      reverseMap = map.map((k, v) => new MapEntry(v, k));
+    }
+    return reverseMap;
+  }
 }

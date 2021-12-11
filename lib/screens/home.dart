@@ -398,7 +398,7 @@ class _HomeState extends State<Home> {
       switch (index) {
         case 0:
           return Navigator.push(
-              context, MaterialPageRoute(builder: (ctx) => RechargeScreen()));
+              context, MaterialPageRoute(builder: (ctx) => MobileRecharge()));
         case 1:
           return Navigator.push(
               context, MaterialPageRoute(builder: (ctx) => ElectricBill()));

@@ -29,5 +29,6 @@ class AppConfig {
   //give direct link to file like https://[[bucketname]].s3.ap-southeast-1.amazonaws.com/
   //otherwise do not change anythink
   static const String BASE_PATH = "$RAW_BASE_URL/$PUBLIC_FOLDER/";
+  static const String BASE_PATH_2 = "$RAW_BASE_URL_2/$PUBLIC_FOLDER";
   //static const String BASE_PATH = "https://tosoviti.s3.ap-southeast-2.amazonaws.com/";
 }

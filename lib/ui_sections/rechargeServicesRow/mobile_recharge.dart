@@ -1,14 +1,15 @@
 // import 'package:active_ecommerce_flutter/providers/apiv3/on_response_callback.dart';
-import 'package:active_ecommerce_flutter/custom/toast_component.dart';
-import 'package:active_ecommerce_flutter/helpers/responsive_helper.dart';
 import 'package:active_ecommerce_flutter/my_theme.dart';
 import 'package:active_ecommerce_flutter/repositories/operator_repository.dart';
-import 'package:flutter/gestures.dart';
+import 'package:active_ecommerce_flutter/ui_sections/rechargeServicesRow/select_operator.dart';
+import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:toast/toast.dart';
+
+enum MobileRechargeType { Prepaid, Postpaid }
 
 class MobileRecharge extends StatefulWidget {
   const MobileRecharge({Key key}) : super(key: key);
@@ -18,6 +19,9 @@ class MobileRecharge extends StatefulWidget {
 }
 
 class _MobileRechargeState extends State<MobileRecharge> {
+  final GlobalKey<ExpansionTileCardState> cardA = new GlobalKey();
+  final GlobalKey<ExpansionTileCardState> cardB = new GlobalKey();
+
 // enum types for recharge
   MobileRechargeType _changeType = MobileRechargeType.Prepaid;
   PhoneContact _phoneContact;
@@ -25,6 +29,9 @@ class _MobileRechargeState extends State<MobileRecharge> {
   String _contact;
   Image _contactPhoto;
   bool kIsWeb = false;
+
+  List planData = [];
+  List operatorData = [];
 // Initialize Controller to auto hit api
   final TextEditingController _mobileController = TextEditingController();
 
@@ -36,87 +43,17 @@ class _MobileRechargeState extends State<MobileRecharge> {
     super.dispose();
   }
 
-// Listen to changes
-  // @override
-  // void initState() {
-  //   super.initState();
+  final ButtonStyle flatButtonStyle = TextButton.styleFrom(
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(4.0)),
+    ),
+  );
 
-  //   // Start listening to changes.
-  // }
+  _moveToPlansScreen() {}
 
-  _showPlansBottomSheetList() {
-    showModalBottomSheet(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        context: context,
-        builder: (builder) {
-          return new Container(
-              // height: SizeConfig.safeBlockVertical * 200,
-              child: Column(
-            children: [
-              Container(
-                height: SizeConfig.safeBlockVertical * 50,
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: ListView(
-                    children: [
-                      Card(
-                        child: ListTile(
-                          leading: Text('Val : \n10 Days'),
-                          title: Text("Plan Short Details"),
-                          subtitle: Text('Plan Long Details : .'),
-                          trailing: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(
-                                      5.0) //         <--- border radius here
-                                  ),
-                              border: Border.all(
-                                color: MyTheme.accent_color,
-                              ),
-                            ),
-                            height: 25,
-                            width: 40,
-                            child: Center(
-                              child: Text("Rs. 34"),
-                            ),
-                          ),
-                          isThreeLine: true,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Card(
-                        child: ListTile(
-                          leading: FlutterLogo(size: 72.0),
-                          title: Text('Three-line ListTile'),
-                          subtitle: Text(
-                              'A sufficiently long subtitle warrants three lines.'),
-                          trailing: Icon(Icons.more_vert),
-                          isThreeLine: true,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Card(
-                        child: ListTile(
-                          leading: FlutterLogo(size: 72.0),
-                          title: Text('Three-line ListTile'),
-                          subtitle: Text(
-                              'A sufficiently long subtitle warrants three lines.'),
-                          trailing: Icon(Icons.more_vert),
-                          isThreeLine: true,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ));
-        });
+  _moveToOperatorSelection() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (ctx) => SelectMOperator()));
   }
 
   _findMobileOperator() async {
@@ -125,32 +62,24 @@ class _MobileRechargeState extends State<MobileRecharge> {
     var rechargeServiceType = "3";
     var operatorResponse = await OperatorRepository().getOpeartorDataResponse(
         phoneNumber, rechargeService, rechargeServiceType);
+    setState(() {
+      operatorData = operatorResponse.data;
+      // print(operatorData[0].operatorName.toString());
+    });
 
-    if (
-        // operatorResponse.data[0].operatorIsMatched == true &&
-        operatorResponse.data[1].operatorIsMatched == false) {
-      ToastComponent.showDialog(
-          operatorResponse.data[0].operatorIsMatched.toString(), context,
-          gravity: Toast.BOTTOM, duration: Toast.LENGTH_LONG);
+    if (operatorResponse.operatorIsMatched == true) {
+      _moveToOperatorSelection();
+      // ToastComponent.showDialog(
+      //     operatorResponse.data[0].operatorIsMatched.toString(), context,
+      //     gravity: Toast.BOTTOM, duration: Toast.LENGTH_LONG);
     } else {
-      ToastComponent.showDialog(
-          operatorResponse.data[0].operatorIsMatched.toString(), context,
-          gravity: Toast.BOTTOM, duration: Toast.LENGTH_LONG);
+      // ToastComponent.showDialog(
+      //     operatorResponse.data[1].operatorIsMatched.toString(), context,
+      //     gravity: Toast.BOTTOM, duration: Toast.LENGTH_LONG);
       // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) {
-      //     return Home();
-      //   }),
-      // );
-      _showPlansBottomSheetList();
-    }
-  }
+      //     context, MaterialPageRoute(builder: (ctx) => SelectMOperator()));
 
-  _findMobilePlans() {
-    var phoneNumber = _mobileController.text.toString();
-    var rechargeService = "2";
-    var rechargeOperatorCode = "VF";
-    var rechargeOperatorCircle = "19";
+    }
   }
 
   @override
@@ -236,20 +165,9 @@ class _MobileRechargeState extends State<MobileRecharge> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      // const Text(
-                      //   "Operator Details",
-                      //   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                      // ),
-                      // const SizedBox(
-                      //   height: 10,
-                      // ),
-                      // const Text(
-                      //   "Jio Fi",
-                      //   style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
-                      // ),
-                      // const SizedBox(
-                      //   height: 30,
-                      // ),
+                      const SizedBox(
+                        height: 30,
+                      ),
                       TextFormField(
                         onChanged: (text) {
                           if (text.isEmpty) {
@@ -339,105 +257,4 @@ class _MobileRechargeState extends State<MobileRecharge> {
       ),
     ));
   }
-
-  Widget _buildError(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-          text:
-              'Your browser does not support contact pickers for more information see: ',
-          children: [
-            TextSpan(
-                text: 'https://web.dev/contact-picker/',
-                style: TextStyle(
-                  color: Colors.blue,
-                  decoration: TextDecoration.underline,
-                ),
-                recognizer: TapGestureRecognizer()
-                // ..onTap = () => launch('https://web.dev/contact-picker/')
-                ),
-            TextSpan(text: ' and '),
-            TextSpan(
-                text:
-                    'https://developer.mozilla.org/en-US/docs/Web/API/Contact_Picker_API#Browser_compatibility/',
-                style: TextStyle(
-                  color: Colors.blue,
-                  decoration: TextDecoration.underline,
-                ),
-                recognizer: TapGestureRecognizer()
-                // ..onTap = () => launch(
-                // 'https://developer.mozilla.org/en-US/docs/Web/API/Contact_Picker_API#Browser_compatibility'))
-                )
-          ]),
-    );
-  }
-
-  List<Widget> _buildChildren(BuildContext context) {
-    return <Widget>[
-      if (_emailContact != null)
-        Column(
-          children: <Widget>[
-            const Text("Email contact:"),
-            Text("Name: ${_emailContact.fullName}"),
-            Text(
-                "Email: ${_emailContact.email.email} (${_emailContact.email.label})")
-          ],
-        ),
-      if (_phoneContact != null)
-        Column(
-          children: <Widget>[
-            const Text("Phone contact:"),
-            Text("Name: ${_phoneContact.fullName}"),
-            Text(
-                "Phone: ${_phoneContact.phoneNumber.number} (${_phoneContact.phoneNumber.label})")
-          ],
-        ),
-      if (_contactPhoto != null) _contactPhoto,
-      if (_contact != null) Text(_contact),
-      ElevatedButton(
-        child: const Text("pick phone contact"),
-        onPressed: () async {
-          final PhoneContact contact =
-              await FlutterContactPicker.pickPhoneContact();
-          print(contact);
-          setState(() {
-            _phoneContact = contact;
-          });
-        },
-      ),
-      ElevatedButton(
-        child: const Text("pick email contact"),
-        onPressed: () async {
-          final EmailContact contact =
-              await FlutterContactPicker.pickEmailContact();
-          print(contact);
-          setState(() {
-            _emailContact = contact;
-          });
-        },
-      ),
-      ElevatedButton(child: const Text("pick full contact"), onPressed: () {}),
-      ElevatedButton(
-        child: const Text('Check permission'),
-        onPressed: () async {
-          final granted = await FlutterContactPicker.hasPermission();
-          showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                  title: const Text('Granted: '), content: Text('$granted')));
-        },
-      ),
-      ElevatedButton(
-        child: const Text('Request permission'),
-        onPressed: () async {
-          final granted = await FlutterContactPicker.requestPermission();
-          showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                  title: const Text('Granted: '), content: Text('$granted')));
-        },
-      ),
-    ];
-  }
 }
-
-enum MobileRechargeType { Prepaid, Postpaid }
