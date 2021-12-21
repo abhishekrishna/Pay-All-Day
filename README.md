@@ -1,6 +1,6 @@
-# active_ecommerce_flutter
+# pay_all_day
 
-This is the flutter mobile application for active ecommerce cms
+This is the flutter mobile application for PAYALLDAY Mobile App
 
 ## Getting Started
 
