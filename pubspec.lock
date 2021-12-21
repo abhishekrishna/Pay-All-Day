@@ -260,20 +260,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  contact_picker_platform_interface:
-    dependency: transitive
+  contacts_service:
+    dependency: "direct main"
     description:
-      name: contact_picker_platform_interface
+      name: contacts_service
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.5.1"
-  contact_picker_web:
-    dependency: transitive
-    description:
-      name: contact_picker_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.5.1"
+    version: "0.6.3"
   convert:
     dependency: transitive
     description:
@@ -316,6 +309,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.0"
+  dartx:
+    dependency: transitive
+    description:
+      name: dartx
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.1"
+  dartxx:
+    dependency: transitive
+    description:
+      name: dartxx
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.4"
   dotted_line:
     dependency: "direct main"
     description:
@@ -421,6 +428,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  flexidate:
+    dependency: transitive
+    description:
+      name: flexidate
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.0+2"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -447,6 +461,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  flutter_contact:
+    dependency: "direct main"
+    description:
+      name: flutter_contact
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.1+7"
   flutter_countdown_timer:
     dependency: "direct main"
     description:
@@ -560,13 +581,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  fluttercontactpicker:
-    dependency: "direct main"
-    description:
-      name: fluttercontactpicker
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.5.1"
   frontend_server_client:
     dependency: transitive
     description:
@@ -742,6 +756,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.1"
+  inflection3:
+    dependency: transitive
+    description:
+      name: inflection3
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.3+2"
   intl:
     dependency: "direct main"
     description:
@@ -826,6 +847,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  logging_config:
+    dependency: transitive
+    description:
+      name: logging_config
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.7+7"
   matcher:
     dependency: transitive
     description:
@@ -1099,6 +1127,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  recase:
+    dependency: transitive
+    description:
+      name: recase
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.0"
   rename:
     dependency: "direct main"
     description:
@@ -1106,6 +1141,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.1"
+  responsive_grid:
+    dependency: "direct main"
+    description:
+      name: responsive_grid
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   rxdart:
     dependency: transitive
     description:
@@ -1293,6 +1335,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.2"
+  time:
+    dependency: transitive
+    description:
+      name: time
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   timeline_list:
     dependency: "direct main"
     description:
@@ -1307,6 +1356,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  timezone:
+    dependency: transitive
+    description:
+      name: timezone
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.0"
   timing:
     dependency: transitive
     description:

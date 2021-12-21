@@ -7,6 +7,7 @@ class AuthHelper {
       is_logged_in.save();
       access_token.$ = loginResponse.access_token;
       access_token.save();
+      print("This is token save ----------${loginResponse.access_token}");
       user_id.$ = loginResponse.user.id;
       user_id.save();
       user_name.$ = loginResponse.user.name;
@@ -21,19 +22,19 @@ class AuthHelper {
   }
 
   clearUserData() {
-      is_logged_in.$ = false;
-      is_logged_in.save();
-      access_token.$ = "";
-      access_token.save();
-      user_id.$ = 0;
-      user_id.save();
-      user_name.$ = "";
-      user_name.save();
-      user_name.$ = "";
-      user_name.save();
-      user_phone.$ = "";
-      user_phone.save();
-      avatar_original.$ = "";
-      avatar_original.save();
+    is_logged_in.$ = false;
+    is_logged_in.save();
+    access_token.$ = "";
+    access_token.save();
+    user_id.$ = 0;
+    user_id.save();
+    user_name.$ = "";
+    user_name.save();
+    user_name.$ = "";
+    user_name.save();
+    user_phone.$ = "";
+    user_phone.save();
+    avatar_original.$ = "";
+    avatar_original.save();
   }
 }

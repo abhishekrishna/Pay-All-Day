@@ -1,6 +1,8 @@
 import 'package:active_ecommerce_flutter/helpers/responsive_helper.dart';
 import 'package:flutter/material.dart';
 
+import '../my_theme.dart';
+
 //Custom TextFormField used in screens
 
 class CustomTextField extends StatelessWidget {
@@ -13,6 +15,7 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return SizedBox(
       height: SizeConfig.blockSizeVertical * 10,
       child: TextField(
@@ -70,5 +73,43 @@ class CustomButton extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30),
                     side: const BorderSide(color: Colors.indigo)))),
         onPressed: onPressed);
+  }
+}
+
+// Custom Button with Disabled States
+
+class DisabledButton extends StatelessWidget {
+  final String buttonText2;
+  final IconData iconName2;
+  final VoidCallback onPressed2;
+  // ignore: use_key_in_widget_constructors
+  const DisabledButton(this.iconName2, this.buttonText2, this.onPressed2);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(60, 15, 50, 15),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(buttonText2.toUpperCase(),
+                  style: TextStyle(fontSize: 14, color: MyTheme.accent_color)),
+              SizedBox(
+                width: SizeConfig.blockSizeHorizontal * 0.9,
+              ),
+              Icon(
+                iconName2,
+                color: MyTheme.accent_color,
+              )
+            ],
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+            primary: Colors.grey[300],
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+                side: const BorderSide(color: Colors.indigo))),
+        onPressed: onPressed2);
   }
 }

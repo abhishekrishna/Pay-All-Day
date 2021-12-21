@@ -58,7 +58,7 @@ class _RegistrationState extends State<Registration> {
     onPressSignUp();
     var resendOTPphone = _phoneNumberController.text.toString();
     Navigator.push(context,
-        MaterialPageRoute(builder: (ctx) => Otp(resendOTPphone, _register_by)));
+        MaterialPageRoute(builder: (ctx) => Otp(_register_by, resendOTPphone)));
   }
 
   onPressSignUp() async {
@@ -123,7 +123,7 @@ class _RegistrationState extends State<Registration> {
       return;
     }
 
-    var signupResponse = await AuthRepository().getSignupResponse(
+    var sMarketsignupResponse = await AuthRepository().getsMarketSignupResponse(
       name,
       phone,
       password,
@@ -131,27 +131,47 @@ class _RegistrationState extends State<Registration> {
       email,
     );
 
-    if (signupResponse.result == false) {
-      ToastComponent.showDialog(signupResponse.message, context,
+    if (sMarketsignupResponse.result == false) {
+      ToastComponent.showDialog(sMarketsignupResponse.message, context,
           gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
     } else {
-      ToastComponent.showDialog(signupResponse.message, context,
+      ToastComponent.showDialog(sMarketsignupResponse.message, context,
           gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) {
-          return Login();
-        }),
+      var signupResponse = await AuthRepository().getSignupResponse(
+        name,
+        phone,
+        password,
+        referral,
+        email,
       );
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) {
-      //     return Otp(
-      //       verify_by: _register_by,
-      //       user_id: signupResponse.user_id,
-      //     );
-      //   }),
-      // );
+
+      if (signupResponse.result == false) {
+        ToastComponent.showDialog(signupResponse.message, context,
+            gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
+      } else {
+        ToastComponent.showDialog(signupResponse.message, context,
+            gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) {
+        //     return Login();
+        //   }),
+        // );
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (ctx) => Otp(_register_by, signupResponse.message)));
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) {
+        //     return Otp(
+        //       verify_by: _register_by,
+        //       user_id: signupResponse.user_id,
+        //     );
+        //   }),
+        // );
+
+      }
     }
   }
 

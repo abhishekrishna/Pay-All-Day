@@ -4,8 +4,6 @@
 
 import 'dart:convert';
 
-import 'login_response.dart';
-
 ConfirmCodeResponse confirmCodeResponseFromJson(String str) =>
     ConfirmCodeResponse.fromJson(json.decode(str));
 
@@ -46,5 +44,45 @@ class ConfirmCodeResponse {
         "token_type": tokenType,
         "expires_at": expiresAt.toIso8601String(),
         "user": user.toJson(),
+      };
+}
+
+class User {
+  User({
+    this.id,
+    this.type,
+    this.name,
+    this.email,
+    this.avatar,
+    this.avatarOriginal,
+    this.phone,
+  });
+
+  int id;
+  String type;
+  String name;
+  String email;
+  String avatar;
+  String avatarOriginal;
+  dynamic phone;
+
+  factory User.fromJson(Map<String, dynamic> json) => User(
+        id: json["id"],
+        type: json["type"],
+        name: json["name"],
+        email: json["email"],
+        avatar: json["avatar"],
+        avatarOriginal: json["avatar_original"],
+        phone: json["phone"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "type": type,
+        "name": name,
+        "email": email,
+        "avatar": avatar,
+        "avatar_original": avatarOriginal,
+        "phone": phone,
       };
 }

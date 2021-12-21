@@ -16,20 +16,22 @@ class WalletReponse {
     this.mainWalletBalance,
     this.cashbackWalletBalance,
     this.rechargeWalletBalance,
+    this.activetionWalletBalance,
     this.incomeWalletBalance,
     this.shoppingWalletBalance,
     this.voucherWalletBalance,
     this.walletTransactionHistory,
   });
 
-  int result;
+  String result;
   String message;
-  double mainWalletBalance;
-  int cashbackWalletBalance;
-  int rechargeWalletBalance;
-  int incomeWalletBalance;
-  int shoppingWalletBalance;
-  int voucherWalletBalance;
+  String mainWalletBalance;
+  String cashbackWalletBalance;
+  String rechargeWalletBalance;
+  String activetionWalletBalance;
+  String incomeWalletBalance;
+  String shoppingWalletBalance;
+  String voucherWalletBalance;
   List<WalletTransactionHistory> walletTransactionHistory;
 
   factory WalletReponse.fromJson(Map<String, dynamic> json) => WalletReponse(
@@ -38,6 +40,7 @@ class WalletReponse {
         mainWalletBalance: json["main_wallet_balance"],
         cashbackWalletBalance: json["cashback_wallet_balance"],
         rechargeWalletBalance: json["recharge_wallet_balance"],
+        activetionWalletBalance: json["activetion_wallet_balance"],
         incomeWalletBalance: json["income_wallet_balance"],
         shoppingWalletBalance: json["shopping_wallet_balance"],
         voucherWalletBalance: json["voucher_wallet_balance"],
@@ -52,6 +55,7 @@ class WalletReponse {
         "main_wallet_balance": mainWalletBalance,
         "cashback_wallet_balance": cashbackWalletBalance,
         "recharge_wallet_balance": rechargeWalletBalance,
+        "activetion_wallet_balance": activetionWalletBalance,
         "income_wallet_balance": incomeWalletBalance,
         "shopping_wallet_balance": shoppingWalletBalance,
         "voucher_wallet_balance": voucherWalletBalance,
@@ -104,9 +108,9 @@ class PayTransaction {
   });
 
   int id;
-  dynamic payAmount;
-  dynamic payTitle;
-  dynamic payDescription;
+  int payAmount;
+  PayTitle payTitle;
+  String payDescription;
   String payStatus;
   DateTime payCreatedAt;
   int payYear;
@@ -115,7 +119,7 @@ class PayTransaction {
   factory PayTransaction.fromJson(Map<String, dynamic> json) => PayTransaction(
         id: json["id"],
         payAmount: json["pay_amount"],
-        payTitle: json["pay_title"],
+        payTitle: payTitleValues.map[json["pay_title"]],
         payDescription: json["pay_description"],
         payStatus: json["pay_status"],
         payCreatedAt: DateTime.parse(json["pay_created_at"]),
@@ -126,11 +130,43 @@ class PayTransaction {
   Map<String, dynamic> toJson() => {
         "id": id,
         "pay_amount": payAmount,
-        "pay_title": payTitle,
+        "pay_title": payTitleValues.reverse[payTitle],
         "pay_description": payDescription,
         "pay_status": payStatus,
         "pay_created_at": payCreatedAt.toIso8601String(),
         "pay_year": payYear,
         "pay_month": payMonth,
       };
+}
+
+enum PayTitle {
+  RECHARGE_SUCCESSFULL_OF_JIO_JIO_10,
+  RECHARGE_SUCCESSFULL_OF_VODAPHONE_VI_10,
+  RECHARGE_SUCCESSFULL_OF_VODAPHONE_VI_0,
+  RECHARGE_SUCCESSFULL_OF_JIO_JIO_1
+}
+
+final payTitleValues = EnumValues({
+  "Recharge successfull of Jio (JIO) 1":
+      PayTitle.RECHARGE_SUCCESSFULL_OF_JIO_JIO_1,
+  "Recharge successfull of Jio (JIO) 10":
+      PayTitle.RECHARGE_SUCCESSFULL_OF_JIO_JIO_10,
+  "Recharge successfull of Vodaphone (VI) 0":
+      PayTitle.RECHARGE_SUCCESSFULL_OF_VODAPHONE_VI_0,
+  "Recharge successfull of Vodaphone (VI) 10":
+      PayTitle.RECHARGE_SUCCESSFULL_OF_VODAPHONE_VI_10
+});
+
+class EnumValues<T> {
+  Map<String, T> map;
+  Map<T, String> reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    if (reverseMap == null) {
+      reverseMap = map.map((k, v) => new MapEntry(v, k));
+    }
+    return reverseMap;
+  }
 }

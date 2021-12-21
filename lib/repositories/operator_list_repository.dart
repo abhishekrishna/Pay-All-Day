@@ -1,25 +1,20 @@
 import 'dart:convert';
 
-import 'package:active_ecommerce_flutter/data_model/operator_data_response.dart';
+import 'package:active_ecommerce_flutter/data_model/operator_list_response.dart';
 
 import '../app_config.dart';
 import 'package:http/http.dart' as http;
 import 'package:active_ecommerce_flutter/helpers/shared_value_helper.dart';
 
-class OperatorRepository {
-  Future<FindMobileOperator> getOpeartorDataResponse(
-    String phoneNumber,
+class OperatorListRepository {
+  Future<OperatorListResponse> getOpeartorListResponse(
     String rechargeService,
-    String rechargeServiceType,
   ) async {
     var post_body = jsonEncode({
-      "recharge_phone": "$phoneNumber",
       "recharge_service": "$rechargeService",
-      "recharge_service_type_id": "$rechargeServiceType",
     });
 
-    Uri url =
-        Uri.parse("${AppConfig.BASE_URL_2}/recharge/find-mobile-operator");
+    Uri url = Uri.parse("${AppConfig.BASE_URL_2}/recharge/operators-list");
     final response = await http.post(url,
         headers: {
           "Content-Type": "application/json",
@@ -28,7 +23,7 @@ class OperatorRepository {
         },
         body: post_body);
 
-    print("hell" + response.body.toString());
-    return findMobileOperatorFromJson(response.body);
+    print("hello" + response.body.toString());
+    return operatorListResponseFromJson(response.body);
   }
 }

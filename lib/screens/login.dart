@@ -1,27 +1,20 @@
+import 'dart:convert';
+
 import 'package:active_ecommerce_flutter/helpers/responsive_helper.dart';
-import 'package:active_ecommerce_flutter/my_theme.dart';
-import 'package:active_ecommerce_flutter/other_config.dart';
+import 'package:active_ecommerce_flutter/screens/home.dart';
 import 'package:active_ecommerce_flutter/ui_sections/custom_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:active_ecommerce_flutter/custom/input_decorations.dart';
-import 'package:active_ecommerce_flutter/custom/intl_phone_input.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:active_ecommerce_flutter/addon_config.dart';
 import 'package:active_ecommerce_flutter/screens/registration.dart';
 import 'package:active_ecommerce_flutter/screens/main.dart';
 import 'package:active_ecommerce_flutter/custom/toast_component.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:active_ecommerce_flutter/repositories/auth_repository.dart';
 import 'package:active_ecommerce_flutter/helpers/auth_helper.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:active_ecommerce_flutter/helpers/shared_value_helper.dart';
-import 'package:active_ecommerce_flutter/repositories/profile_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Login extends StatefulWidget {
@@ -37,8 +30,9 @@ class _LoginState extends State<Login> {
 
   //controllers
   TextEditingController _phoneNumberController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
+  // TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   void initState() {
@@ -56,161 +50,177 @@ class _LoginState extends State<Login> {
   }
 
   onPressedLogin() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     var email = _phoneNumberController.text.toString();
     var password = _passwordController.text.toString();
 
-    if (_login_by == 'email' && email == "") {
-      ToastComponent.showDialog(
-          AppLocalizations.of(context).login_screen_email_warning, context,
-          gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
-      return;
-    } else if (_login_by == 'phone' && _phone == "") {
-      ToastComponent.showDialog(
-          AppLocalizations.of(context).login_screen_phone_warning, context,
-          gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
-      return;
-    } else if (password == "") {
-      ToastComponent.showDialog(
-          AppLocalizations.of(context).login_screen_password_warning, context,
-          gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
-      return;
-    }
-
+    // if (_login_by == 'email' && email == "") {
+    //   ToastComponent.showDialog(
+    //       AppLocalizations.of(context).login_screen_email_warning, context,
+    //       gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
+    //   return;
+    // } else if (_login_by == 'phone' && _phone == "") {
+    //   ToastComponent.showDialog(
+    //       AppLocalizations.of(context).login_screen_phone_warning, context,
+    //       gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
+    //   return;
+    // } else if (password == "") {
+    //   ToastComponent.showDialog(
+    //       AppLocalizations.of(context).login_screen_password_warning, context,
+    //       gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
+    //   return;
+    // }
     var loginResponse = await AuthRepository()
         .getLoginResponse(_login_by == 'email' ? email : _phone, password);
-
+    // var loginsMarketResponse = await AuthRepository().getsMarketLoginResponse(
+    //     _login_by == 'email' ? email : _phone, password);
     if (loginResponse.result == false) {
       ToastComponent.showDialog(loginResponse.message, context,
           gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
     } else {
+      AuthHelper().setUserData(loginResponse);
       ToastComponent.showDialog(loginResponse.message, context,
           gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
-      AuthHelper().setUserData(loginResponse);
 
-      // push notification starts
-      if (OtherConfig.USE_PUSH_NOTIFICATION) {
-        final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+      if (loginResponse.result == false) {
+        ToastComponent.showDialog(loginResponse.message, context,
+            gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
+      } else {
+        ToastComponent.showDialog(loginResponse.message, context,
+            gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
 
-        await _fcm.requestPermission(
-          alert: true,
-          announcement: false,
-          badge: true,
-          carPlay: false,
-          criticalAlert: false,
-          provisional: false,
-          sound: true,
-        );
-
-        String fcmToken = await _fcm.getToken();
-
-        if (fcmToken != null) {
-          print("--fcm token--");
-          print(fcmToken);
-          if (is_logged_in.$ == true) {
-            // update device token
-            var deviceTokenUpdateResponse = await ProfileRepository()
-                .getDeviceTokenUpdateResponse(fcmToken);
-          }
+        if (loginResponse.result == true) {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => Home()),
+              (Route<dynamic> route) => false);
+          // Map<String, dynamic> resposne = jsonDecode(loginResponse.access_token);
+          preferences.setInt('value', 1);
+          print(preferences.getInt('value').toString() + '--------------');
         }
       }
 
+      // print(object)
+
+      // push notification starts
+      // if (OtherConfig.USE_PUSH_NOTIFICATION) {
+      //   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+
+      //   await _fcm.requestPermission(
+      //     alert: true,
+      //     announcement: false,
+      //     badge: true,
+      //     carPlay: false,
+      //     criticalAlert: false,
+      //     provisional: false,
+      //     sound: true,
+      //   );
+
+      //   String fcmToken = await _fcm.getToken();
+
+      //   if (fcmToken != null) {
+      //     print("--fcm token--");
+      //     print(fcmToken);
+      //     if (is_logged_in.$ == true) {
+      //       // update device token
+      //       var deviceTokenUpdateResponse = await ProfileRepository()
+      //           .getDeviceTokenUpdateResponse(fcmToken);
+      //     }
+      //   }
+      // }
+
       //push norification ends
 
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return Main();
-      }));
+      // onPressedFacebookLogin() async {
+      //   final facebookLogin = FacebookLogin();
+      //   final facebookLoginResult = await facebookLogin.logIn(['email']);
+
+      //   /*print(facebookLoginResult.accessToken);
+      //   print(facebookLoginResult.accessToken.token);
+      //   print(facebookLoginResult.accessToken.expires);
+      //   print(facebookLoginResult.accessToken.permissions);
+      //   print(facebookLoginResult.accessToken.userId);
+      //   print(facebookLoginResult.accessToken.isValid());
+
+      //   print(facebookLoginResult.errorMessage);
+      //   print(facebookLoginResult.status);*/
+
+      //   final token = facebookLoginResult.accessToken.token;
+
+      //   /// for profile details also use the below code
+      //   Uri url = Uri.parse(
+      //       'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=$token');
+      //   final graphResponse = await http.get(url);
+      //   final profile = json.decode(graphResponse.body);
+      //   //print(profile);
+      //   /*from profile you will get the below params
+      //   {
+      //    "name": "Iiro Krankka",
+      //    "first_name": "Iiro",
+      //    "last_name": "Krankka",
+      //    "email": "iiro.krankka\u0040gmail.com",
+      //    "id": "<user id here>"
+      //   }*/
+
+      //   var loginResponse = await AuthRepository().getSocialLoginResponse(
+      //       profile['name'], profile['email'], profile['id'].toString());
+
+      //   if (loginResponse.result == false) {
+      //     ToastComponent.showDialog(loginResponse.message, context,
+      //         gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
+      //   } else {
+      //     ToastComponent.showDialog(loginResponse.message, context,
+      //         gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
+      //     AuthHelper().setUserData(loginResponse);
+      //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //       return Main();
+      //     }));
+      //   }
+      // }
+
+      // onPressedGoogleLogin() async {
+      //   GoogleSignIn _googleSignIn = GoogleSignIn(
+      //     scopes: [
+      //       'email',
+      //       // you can add extras if you require
+      //     ],
+      //   );
+
+      //   _googleSignIn.signIn().then((GoogleSignInAccount acc) async {
+      //     GoogleSignInAuthentication auth = await acc.authentication;
+      //     print(acc.id);
+      //     print(acc.email);
+      //     print(acc.displayName);
+      //     print(acc.photoUrl);
+
+      //     acc.authentication.then((GoogleSignInAuthentication auth) async {
+      //       print(auth.idToken);
+      //       print(auth.accessToken);
+
+      //       //---------------------------------------------------
+      //       var loginResponse = await AuthRepository().getSocialLoginResponse(
+      //           acc.displayName, acc.email, auth.accessToken);
+
+      //       if (loginResponse.result == false) {
+      //         ToastComponent.showDialog(loginResponse.message, context,
+      //             gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
+      //       } else {
+      //         ToastComponent.showDialog(loginResponse.message, context,
+      //             gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
+      //         AuthHelper().setUserData(loginResponse);
+      //         Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //           return Main();
+      //         }));
+      //       }
+
+      //       //-----------------------------------
+      //     });
     }
-  }
-
-  onPressedFacebookLogin() async {
-    final facebookLogin = FacebookLogin();
-    final facebookLoginResult = await facebookLogin.logIn(['email']);
-
-    /*print(facebookLoginResult.accessToken);
-    print(facebookLoginResult.accessToken.token);
-    print(facebookLoginResult.accessToken.expires);
-    print(facebookLoginResult.accessToken.permissions);
-    print(facebookLoginResult.accessToken.userId);
-    print(facebookLoginResult.accessToken.isValid());
-
-    print(facebookLoginResult.errorMessage);
-    print(facebookLoginResult.status);*/
-
-    final token = facebookLoginResult.accessToken.token;
-
-    /// for profile details also use the below code
-    Uri url = Uri.parse(
-        'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=$token');
-    final graphResponse = await http.get(url);
-    final profile = json.decode(graphResponse.body);
-    //print(profile);
-    /*from profile you will get the below params
-    {
-     "name": "Iiro Krankka",
-     "first_name": "Iiro",
-     "last_name": "Krankka",
-     "email": "iiro.krankka\u0040gmail.com",
-     "id": "<user id here>"
-    }*/
-
-    var loginResponse = await AuthRepository().getSocialLoginResponse(
-        profile['name'], profile['email'], profile['id'].toString());
-
-    if (loginResponse.result == false) {
-      ToastComponent.showDialog(loginResponse.message, context,
-          gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
-    } else {
-      ToastComponent.showDialog(loginResponse.message, context,
-          gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
-      AuthHelper().setUserData(loginResponse);
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return Main();
-      }));
-    }
-  }
-
-  onPressedGoogleLogin() async {
-    GoogleSignIn _googleSignIn = GoogleSignIn(
-      scopes: [
-        'email',
-        // you can add extras if you require
-      ],
-    );
-
-    _googleSignIn.signIn().then((GoogleSignInAccount acc) async {
-      GoogleSignInAuthentication auth = await acc.authentication;
-      print(acc.id);
-      print(acc.email);
-      print(acc.displayName);
-      print(acc.photoUrl);
-
-      acc.authentication.then((GoogleSignInAuthentication auth) async {
-        print(auth.idToken);
-        print(auth.accessToken);
-
-        //---------------------------------------------------
-        var loginResponse = await AuthRepository().getSocialLoginResponse(
-            acc.displayName, acc.email, auth.accessToken);
-
-        if (loginResponse.result == false) {
-          ToastComponent.showDialog(loginResponse.message, context,
-              gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
-        } else {
-          ToastComponent.showDialog(loginResponse.message, context,
-              gravity: Toast.CENTER, duration: Toast.LENGTH_LONG);
-          AuthHelper().setUserData(loginResponse);
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return Main();
-          }));
-        }
-
-        //-----------------------------------
-      });
-    });
+    ;
   }
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     final _screen_height = MediaQuery.of(context).size.height;
     final _screen_width = MediaQuery.of(context).size.width;
     return Directionality(
@@ -452,10 +462,31 @@ class _LoginState extends State<Login> {
                                               "Mobile Number",
                                               Icons.mobile_friendly,
                                               _phoneNumberController),
-                                          CustomTextField(
-                                              "Password",
-                                              Icons.phone_android,
-                                              _passwordController),
+                                          SizedBox(
+                                            height:
+                                                SizeConfig.blockSizeVertical *
+                                                    10,
+                                            child: TextField(
+                                              obscureText: true,
+                                              decoration: InputDecoration(
+                                                  hintText: "Password",
+                                                  prefixIcon: Icon(
+                                                    Icons.password,
+                                                    color:
+                                                        const Color(0xFF000000),
+                                                  ),
+                                                  hintStyle: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black,
+                                                      fontSize: 12)),
+                                              controller: _passwordController,
+                                            ),
+                                          ),
+                                          // CustomTextField(
+                                          //     "Password",
+                                          //     Icons.phone_android,
+                                          //     _passwordController),
                                           SizedBox(
                                             height: _screen_height * 0.15,
                                           ),
@@ -590,56 +621,51 @@ class _LoginState extends State<Login> {
                   //   height: SizeConfig.blockSizeVertical * 17.3,
                   //   width: double.infinity,
                   // ),
-                  Transform.translate(
-                    offset: Offset(0.0, 0.3),
-                    child: Transform.rotate(
-                        angle: 3.14,
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: ClipPath(
-                            clipper: BottomClipper(),
-                            child: Container(
-                              decoration:
-                                  BoxDecoration(color: Colors.indigo[900]),
-                              width: double.infinity,
-                              height: SizeConfig.safeBlockVertical * 20,
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Transform.rotate(
-                                    angle: 3.14,
-                                    child: InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (ctx) =>
-                                                      Registration()));
-                                        },
-                                        child: RichText(
-                                          text: const TextSpan(
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12,
-                                                  letterSpacing: 0.8),
-                                              children: [
-                                                TextSpan(
-                                                    text:
-                                                        "Don't have an account ? "),
-                                                TextSpan(
-                                                    text: "Signup",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold))
-                                              ]),
-                                        ))),
-                              ),
-                            ),
+                  Transform.rotate(
+                      angle: 3.14,
+                      child: ClipPath(
+                        clipper: BottomClipper(),
+                        child: Container(
+                          decoration: BoxDecoration(color: Colors.indigo[900]),
+                          width: double.infinity,
+                          height: _screen_height * 0.20,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Transform.rotate(
+                                angle: 3.14,
+                                child: InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (ctx) =>
+                                                  Registration()));
+                                    },
+                                    child: RichText(
+                                      text: const TextSpan(
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              letterSpacing: 0.8),
+                                          children: [
+                                            TextSpan(
+                                                text:
+                                                    "Don't have an account ? "),
+                                            TextSpan(
+                                                text: "Signup",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold))
+                                          ]),
+                                    ))),
                           ),
-                        )),
-                  )
+                        ),
+                      ))
                 ],
               ),
-            )));
+            )
+            // bottomNavigationBar: BottomNavigationBar(fixedColor: LinearGradient[],),
+            ));
   }
 }
 
@@ -662,16 +688,16 @@ class BottomClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     Path path = Path();
-    path.lineTo(0.0, size.height - 60);
+    path.lineTo(0.0, size.height - 50);
 
     var firstControlPoint = Offset(size.width / 4, size.height);
-    var firstEndPoint = Offset(size.width / 2.25, size.height - 30.0);
+    var firstEndPoint = Offset(size.width / 2.25, size.height - 35.0);
     path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
         firstEndPoint.dx, firstEndPoint.dy);
 
     var secondControlPoint =
-        Offset(size.width - (size.width / 3.25), size.height - 65);
-    var secondEndPoint = Offset(size.width, size.height - 10);
+        Offset(size.width - (size.width / 3.25), size.height - 75);
+    var secondEndPoint = Offset(size.width, size.height - 40);
     path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
         secondEndPoint.dx, secondEndPoint.dy);
 

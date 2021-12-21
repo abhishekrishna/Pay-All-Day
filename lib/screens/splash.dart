@@ -1,14 +1,22 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:active_ecommerce_flutter/app_config.dart';
+import 'package:active_ecommerce_flutter/data_model/login_response.dart';
 import 'package:active_ecommerce_flutter/helpers/responsive_helper.dart';
+// import 'package:active_ecommerce_flutter/helpers/responsive_helper.dart';
 import 'package:active_ecommerce_flutter/my_theme.dart';
+import 'package:active_ecommerce_flutter/screens/login.dart';
 import 'package:active_ecommerce_flutter/screens/main.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:active_ecommerce_flutter/helpers/shared_value_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_value/shared_value.dart';
+
+import 'home.dart';
 
 class Splash extends StatefulWidget {
   @override
@@ -28,6 +36,8 @@ class _SplashState extends State<Splash> {
     //on Splash Screen hide statusbar
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.initState();
+    getPref();
+
     _initPackageInfo();
   }
 
@@ -47,21 +57,37 @@ class _SplashState extends State<Splash> {
   }
 
   Future<Widget> loadFromFuture() async {
+    var loginValue = is_logged_in.load();
+    print(loginValue);
+    // is_logged_in.value.toString()
     // <fetch data from server. ex. login>
 
-    return Future.value(Main());
+    return Future.value(Login());
+  }
+
+  var _loginStatus = 0;
+  getPref() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      _loginStatus = preferences.getInt("value");
+      print(_loginStatus);
+      // preferences.clear();
+      // print(_loginStatus);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    // print(is_logged_in);
     return CustomSplashScreen(
       //comment this
-      seconds: 3,
+      seconds: 2,
 
       //comment this
-      navigateAfterSeconds: Main(),
+      navigateAfterSeconds: _loginStatus == 1 ? Main() : Login(),
 
-      //navigateAfterFuture: loadFromFuture(), //uncomment this
+      // navigateAfterFuture: loadFromFuture(), //uncomment this
       title: Text(
         "V " + _packageInfo.version,
         style: TextStyle(
@@ -317,46 +343,40 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                   color: widget.backgroundColor,
                 ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    child: Hero(
-                      tag: "backgroundImageInSplash",
-                      child: Container(child: widget.backgroundImage),
-                    ),
-                    radius: widget.backgroundPhotoSize,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 120.0),
-                    child: Container(
-                        width: double.infinity,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 60.0),
-                              child: CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                child: Hero(
-                                  tag: "splashscreenImage",
-                                  child: Container(child: widget.image),
-                                ),
-                                radius: widget.photoSize,
-                              ),
+              CircleAvatar(
+                backgroundColor: Colors.transparent,
+                child: Hero(
+                  tag: "backgroundImageInSplash",
+                  child: Container(child: widget.backgroundImage),
+                ),
+                radius: widget.backgroundPhotoSize,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 120.0),
+                child: Container(
+                    width: double.infinity,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 60.0),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            child: Hero(
+                              tag: "splashscreenImage",
+                              child: Container(child: widget.image),
                             ),
-                            widget.title,
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10.0),
-                            ),
-                            widget.loadingText
-                          ],
-                        )),
-                  ),
-                ],
+                            radius: widget.photoSize,
+                          ),
+                        ),
+                        widget.title,
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                        ),
+                        widget.loadingText
+                      ],
+                    )),
               ),
             ],
           ),

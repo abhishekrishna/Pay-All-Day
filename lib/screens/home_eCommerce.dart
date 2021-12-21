@@ -6,12 +6,14 @@ import 'package:active_ecommerce_flutter/screens/top_selling_products.dart';
 import 'package:active_ecommerce_flutter/screens/category_products.dart';
 import 'package:active_ecommerce_flutter/screens/category_list.dart';
 import 'package:active_ecommerce_flutter/ui_sections/drawer.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:active_ecommerce_flutter/repositories/sliders_repository.dart';
 import 'package:active_ecommerce_flutter/repositories/category_repository.dart';
 import 'package:active_ecommerce_flutter/repositories/product_repository.dart';
 import 'package:active_ecommerce_flutter/app_config.dart';
+import 'package:flutter/services.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:active_ecommerce_flutter/custom/toast_component.dart';
 import 'package:toast/toast.dart';
@@ -21,7 +23,7 @@ import 'package:active_ecommerce_flutter/helpers/shared_value_helper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Home2 extends StatefulWidget {
-  Home2({Key key, this.title, this.show_back_button = false, go_back = true})
+  Home2({Key key, this.title, this.show_back_button = false, go_back = false})
       : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -44,8 +46,27 @@ class Home2 extends StatefulWidget {
 class _Home2State extends State<Home2> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _current_slider = 0;
+  int _currentIndex = 0;
+
   ScrollController _featuredProductScrollController;
   ScrollController _mainScrollController = ScrollController();
+  final autoSizeGroup = AutoSizeGroup();
+  AnimationController _animationController;
+  Animation<double> animation;
+  CurvedAnimation curve;
+  final iconList = <IconData>[
+    Icons.home_outlined,
+    Icons.search_outlined,
+    Icons.shopping_bag_outlined,
+    Icons.other_houses_outlined,
+  ];
+
+  final iconName = <String>["Home", "More", "Travels", "Others"];
+  void onTapped(int i) {
+    setState(() {
+      _currentIndex = i;
+    });
+  }
 
   var _carouselImageList = [];
   var _featuredCategoryList = [];
@@ -59,6 +80,29 @@ class _Home2State extends State<Home2> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIOverlays(
+        [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    _animationController = AnimationController(
+      duration: Duration(seconds: 1),
+      vsync: this,
+    );
+    curve = CurvedAnimation(
+      parent: _animationController,
+      curve: Interval(
+        0.5,
+        1.0,
+        curve: Curves.fastOutSlowIn,
+      ),
+    );
+    animation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(curve);
+
+    Future.delayed(
+      Duration(seconds: 1),
+      () => _animationController.forward(),
+    );
     // TODO: implement initState
     super.initState();
     // In initState()
@@ -151,13 +195,13 @@ class _Home2State extends State<Home2> with TickerProviderStateMixin {
     //print(MediaQuery.of(context).viewPadding.top);
 
     return WillPopScope(
-      onWillPop: () async {
-        return widget.go_back;
-      },
-      child: Directionality(
-        textDirection:
-            app_language_rtl.$ ? TextDirection.rtl : TextDirection.ltr,
-        child: Scaffold(
+        onWillPop: () async {
+          return widget.go_back;
+        },
+        child: Directionality(
+          textDirection:
+              app_language_rtl.$ ? TextDirection.rtl : TextDirection.ltr,
+          child: Scaffold(
             key: _scaffoldKey,
             // backgroundColor: Colors.blue.shade200,
             appBar: buildAppBar(statusBarHeight, context),
@@ -259,9 +303,59 @@ class _Home2State extends State<Home2> with TickerProviderStateMixin {
                     alignment: Alignment.center,
                     child: buildProductLoadingContainer())
               ],
-            )),
-      ),
-    );
+            ),
+            // bottomNavigationBar: ClipRRect(
+            //   child: BottomAppBar(
+            //     // elevation: 0,
+            //     notchMargin: 10.0,
+            //     clipBehavior: Clip.antiAlias,
+            //     child: AnimatedBottomNavigationBar.builder(
+            //       height: 80,
+            //       // elevation: 10,
+            //       splashColor: Colors.indigo,
+            //       itemCount: iconList.length,
+            //       tabBuilder: (int index, bool isActive) {
+            //         return Column(
+            //           mainAxisSize: MainAxisSize.min,
+            //           mainAxisAlignment: MainAxisAlignment.center,
+            //           children: [
+            //             Padding(
+            //               padding: const EdgeInsets.all(8.0),
+            //               child: Icon(
+            //                 iconList[index],
+            //                 size: 34,
+            //                 color: MyTheme.accent_color,
+            //               ),
+            //             ),
+            //             const SizedBox(height: 4),
+            //             Padding(
+            //               padding: const EdgeInsets.symmetric(horizontal: 8),
+            //               child: AutoSizeText(
+            //                 iconName[index],
+            //                 maxLines: 1,
+            //                 style: TextStyle(color: MyTheme.accent_color),
+            //                 group: autoSizeGroup,
+            //               ),
+            //             )
+            //           ],
+            //         );
+            //       },
+            //       backgroundColor: Colors.indigo.shade100,
+
+            //       activeIndex: _currentIndex,
+            //       // notchAndCornersAnimation: animation,
+            //       splashSpeedInMilliseconds: 100,
+            //       notchSmoothness: NotchSmoothness.verySmoothEdge,
+            //       notchAndCornersAnimation: animation,
+            //       gapLocation: GapLocation.center,
+            //       leftCornerRadius: 32,
+            //       rightCornerRadius: 32,
+            //       onTap: (index) => setState(() => _currentIndex = index),
+            //     ),
+            //   ),
+            // ),
+          ),
+        ));
   }
 
   buildHomeFeaturedProducts(context) {
@@ -683,37 +777,44 @@ class _Home2State extends State<Home2> with TickerProviderStateMixin {
 
   AppBar buildAppBar(double statusBarHeight, BuildContext context) {
     return AppBar(
+      // automaticallyImplyLeading: true,
       backgroundColor: Colors.white,
-      leading: GestureDetector(
-        onTap: () {
-          _scaffoldKey.currentState.openDrawer();
-        },
-        child: widget.show_back_button
-            ? Builder(
-                builder: (context) => IconButton(
-                    icon: Icon(Icons.arrow_back, color: MyTheme.dark_grey),
-                    onPressed: () {
-                      if (!widget.go_back) {
-                        return;
-                      }
-                      return Navigator.of(context).pop();
-                    }),
-              )
-            : Builder(
-                builder: (context) => Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 18.0, horizontal: 0.0),
-                  child: Container(
-                    child: Image.asset(
-                      'assets/hamburger.png',
-                      height: 16,
-                      //color: MyTheme.dark_grey,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-      ),
+      foregroundColor: MyTheme.black_color,
+      leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(Icons.arrow_back)),
+      //  GestureDetector(
+      //   onTap: () {
+      //     _scaffoldKey.currentState.openDrawer();
+      //   },
+      //   child: widget.show_back_button
+      //       ? Builder(
+      //           builder: (context) => IconButton(
+      //               icon: Icon(Icons.arrow_back, color: MyTheme.dark_grey),
+      //               onPressed: () {
+      //                 if (!widget.go_back) {
+      //                   return;
+      //                 }
+      //                 return Navigator.of(context).pop();
+      //               }),
+      //         )
+      //       : Builder(
+      //           builder: (context) => Padding(
+      //             padding: const EdgeInsets.symmetric(
+      //                 vertical: 18.0, horizontal: 0.0),
+      //             child: Container(
+      //               child: Image.asset(
+      //                 'assets/hamburger.png',
+      //                 height: 16,
+      //                 //color: MyTheme.dark_grey,
+      //                 color: Colors.black,
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      // ),
       title: Container(
         height: kToolbarHeight +
             statusBarHeight -

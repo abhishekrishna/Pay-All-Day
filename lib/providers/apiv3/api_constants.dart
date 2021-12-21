@@ -3,6 +3,7 @@
 class API {
   //Base URL
   static const BASE_URL = "https://payall.thedigitalkranti.com";
+  static const IMAGE_URL = "https://payall.thedigitalkranti.com/public/";
 
   //Auth Services
   static const REGISTER = "$BASE_URL/api/v2/auth/signup";

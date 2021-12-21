@@ -53,6 +53,7 @@ class _OtpState extends State<Otp> {
   }
 
   onPressConfirm() async {
+    print(widget.phone);
     var code = _verificationCodeController.text.toString();
 
     if (code == "") {

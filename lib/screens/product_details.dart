@@ -1751,7 +1751,7 @@ class _ProductDetailsState extends State<ProductDetails> {
       leading: Builder(
         builder: (context) => IconButton(
           icon: Icon(Icons.arrow_back, color: MyTheme.dark_grey),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop(context),
         ),
       ),
       title: Container(
@@ -1797,7 +1797,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               FlatButton(
                 minWidth: MediaQuery.of(context).size.width / 2 - .5,
                 height: 50,
-                color: MyTheme.golden,
+                color: Colors.green,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(0.0),
                 ),
@@ -1819,7 +1819,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               FlatButton(
                 minWidth: MediaQuery.of(context).size.width / 2 - .5,
                 height: 50,
-                color: MyTheme.accent_color,
+                color: Colors.amber.shade800,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(0.0),
                 ),

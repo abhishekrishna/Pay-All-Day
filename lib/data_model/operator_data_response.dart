@@ -50,14 +50,14 @@ class FindMobileOperator {
 }
 
 class OperatorMatchedData {
-  OperatorMatchedData({
-    this.operatorId,
-    this.operatorName,
-    this.operatorCode,
-    this.operatorCircleCode,
-    this.operatorIcon,
-    this.operatorIsMatched,
-  });
+  OperatorMatchedData(
+      {this.operatorId,
+      this.operatorName,
+      this.operatorCode,
+      this.operatorCircleCode,
+      this.operatorIcon,
+      this.operatorIsMatched,
+      this.operatorCircleName});
 
   int operatorId;
   String operatorName;
@@ -65,6 +65,7 @@ class OperatorMatchedData {
   String operatorCircleCode;
   String operatorIcon;
   bool operatorIsMatched;
+  String operatorCircleName;
 
   factory OperatorMatchedData.fromJson(Map<String, dynamic> json) =>
       OperatorMatchedData(
@@ -76,6 +77,9 @@ class OperatorMatchedData {
         operatorIsMatched: json["operator_is_matched"] == null
             ? null
             : json["operator_is_matched"],
+        operatorCircleName: json["operator_circle_name"] == null
+            ? null
+            : json["operator_circle_name"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -86,5 +90,7 @@ class OperatorMatchedData {
         "operator_icon": operatorIcon,
         "operator_is_matched":
             operatorIsMatched == null ? null : operatorIsMatched,
+        "operator_circle_name":
+            operatorCircleName == null ? null : operatorCircleName,
       };
 }

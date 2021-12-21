@@ -1,17 +1,17 @@
 import 'dart:ui';
 
+import 'package:active_ecommerce_flutter/helpers/responsive_helper.dart';
 import 'package:active_ecommerce_flutter/helpers/shimmer_helper.dart';
 import 'package:active_ecommerce_flutter/my_theme.dart';
 import 'package:active_ecommerce_flutter/repositories/category_repository.dart';
 import 'package:active_ecommerce_flutter/repositories/product_repository.dart';
+import 'package:active_ecommerce_flutter/repositories/services_repository.dart';
 import 'package:active_ecommerce_flutter/repositories/sliders_repository.dart';
 import 'package:active_ecommerce_flutter/screens/qr_pay.dart';
 import 'package:active_ecommerce_flutter/screens/wallet.dart';
 import 'package:active_ecommerce_flutter/ui_sections/drawer.dart';
 import 'package:active_ecommerce_flutter/ui_sections/rechargeServicesRow/electric_bill.dart';
 import 'package:active_ecommerce_flutter/ui_sections/rechargeServicesRow/mobile_recharge.dart';
-// import 'package:active_ecommerce_flutter/ui_sections/sendMoneyRow/all_services.dart';
-import 'package:active_ecommerce_flutter/ui_sections/sendMoneyRow/recharge.dart';
 import 'package:active_ecommerce_flutter/ui_sections/sendMoneyRow/passbook.dart';
 import 'package:active_ecommerce_flutter/ui_sections/sendMoneyRow/send_to_contact.dart';
 import 'package:active_ecommerce_flutter/ui_sections/sendMoneyRow/to_account.dart';
@@ -22,6 +22,7 @@ import 'package:active_ecommerce_flutter/ui_sections/sendMoneyRow/upi_pay.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:flutter/material.dart';
+import 'package:responsive_grid/responsive_grid.dart';
 import 'package:shape_of_view/shape_of_view.dart';
 
 import '../app_config.dart';
@@ -44,7 +45,6 @@ class Home extends StatefulWidget {
   final String title;
   bool show_back_button;
   bool go_back;
-
   @override
   _HomeState createState() => _HomeState();
 }
@@ -61,6 +61,8 @@ class _HomeState extends State<Home> {
   bool _isProductInitial = true;
   bool _isCategoryInitial = true;
   bool _isCarouselInitial = true;
+  bool isHomeLoaded = false;
+
   int _totalProductData = 0;
   int _productPage = 1;
   bool _showProductLoadingContainer = false;
@@ -69,6 +71,7 @@ class _HomeState extends State<Home> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    callme();
     // In initState()
     fetchAll();
 
@@ -88,6 +91,7 @@ class _HomeState extends State<Home> {
   }
 
   fetchAll() {
+    _getPublicServicesList();
     fetchCarouselImages();
     fetchFeaturedCategories();
     fetchFeaturedProducts();
@@ -132,6 +136,11 @@ class _HomeState extends State<Home> {
     resetProductList();
   }
 
+  _getPublicServicesList() async {
+    var publicServicesResponse = await ServicesRepository().getServicesList();
+    print(publicServicesResponse);
+  }
+
   Future<void> _onRefresh() async {
     reset();
     fetchAll();
@@ -151,6 +160,14 @@ class _HomeState extends State<Home> {
     // TODO: implement dispose
     super.dispose();
     _mainScrollController.dispose();
+  }
+
+  callme() async {
+    await Future.delayed(Duration(seconds: 1));
+
+    setState(() {
+      isHomeLoaded = true;
+    });
   }
 
   @override
@@ -191,9 +208,9 @@ class _HomeState extends State<Home> {
       "assets/rehargewallet.png",
     ];
     List<String> iconNames2 = [
-      "Add Money to Wallet Get 50 to 100 Free Shopping Coins",
-      "Get Cashback Upto 10% OR Rs. 500 On Adding Balance",
-      "Convert Shooping Coins Into Wallet",
+      "Add Money to Wallet\n         at 50% Off",
+      "Upto 10% OR\n   Rs. 500 on \n  Wallet Load",
+      "Convert Shooping \nCoins Into Wallet",
       "Cashback Wallet",
       "Voucher Wallet",
       "ADAIO Coin Wallet",
@@ -467,992 +484,1063 @@ class _HomeState extends State<Home> {
     //                               16.0,
     //                               0.0,
     //                             ),
+
     return SafeArea(
         child: Scaffold(
+
             // backgroundColor: Colors.blue.shade200,
             key: _scaffoldKey,
             drawer: MainDrawer(),
             appBar: buildAppBar(50, context),
-            body: SingleChildScrollView(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        height: mediaQuery.height * 0.12,
-                        width: mediaQuery.width * 0.65,
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(15),
-                                bottomRight: Radius.circular(15)),
-                            gradient: LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: <Color>[
-                                  Color(0xFF0288D1),
-                                  Color(0xFF0D47A1)
-                                ])),
-                        child: Row(
+            body: isHomeLoaded
+                ? SingleChildScrollView(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Row(
                           children: [
-                            const SizedBox(
-                              width: 25,
-                            ),
-                            Image.asset(
-                              "assets/hsasset1.png",
-                              height: 60,
-                            ),
-                            const SizedBox(
-                              width: 25,
+                            buildHomeTopBanner(context, mediaQuery),
+                            SizedBox(
+                              width: mediaQuery.width * 0.10,
                             ),
                             Column(
-                              children: const [
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Text(
-                                  "Services Offers",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 1.5),
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Text("Recharge, Bills, Flights & \nMore",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        letterSpacing: 0.5))
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: mediaQuery.width * 0.10,
-                      ),
-                      Column(
-                        children: [
-                          Card(
-                            elevation: 10,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              height: mediaQuery.height * 0.07,
-                              width: mediaQuery.width * 0.12,
-                              child: Image.asset("assets/hsasset2.png"),
-                            ),
-                          ),
-                          SizedBox(
-                            height: mediaQuery.height * 0.01,
-                          ),
-                          const Text(
-                            "Add Funds",
-                            style: TextStyle(fontSize: 12),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: mediaQuery.height * 0.02,
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        height: mediaQuery.height * 0.15,
-                        width: mediaQuery.width * 0.65,
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(15),
-                                bottomRight: Radius.circular(15)),
-                            gradient: LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: <Color>[
-                                  Color(0xFF00796B),
-                                  Color(0xFF311B92)
-                                ])),
-                        child: Row(
-                          children: [
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Image.asset(
-                              "assets/hsasset3.png",
-                              height: 60,
-                            ),
-                            const SizedBox(
-                              width: 25,
-                            ),
-                            Column(
-                              children: const [
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Text(
-                                  "Send Money \nEasily",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 1.5),
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Text("Easily transfer funds \nto other users",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        color: Colors.white,
-                                        fontSize: 8,
-                                        letterSpacing: 0.5))
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: mediaQuery.width * 0.10,
-                      ),
-                      Column(
-                        children: [
-                          Card(
-                            elevation: 10,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              height: mediaQuery.height * 0.07,
-                              width: mediaQuery.width * 0.12,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.asset("assets/hsasset6.png"),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: mediaQuery.height * 0.01,
-                          ),
-                          const Text(
-                            "Rewards",
-                            style: TextStyle(fontSize: 12),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: mediaQuery.height * 0.02,
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        height: mediaQuery.height * 0.12,
-                        width: mediaQuery.width * 0.65,
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(15),
-                                bottomRight: Radius.circular(15)),
-                            gradient: LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: <Color>[
-                                  Color(0xFF0288D1),
-                                  Color(0xFF0D47A1)
-                                ])),
-                        child: Row(
-                          children: [
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Image.asset(
-                              "assets/hsasset4.png",
-                              height: 60,
-                            ),
-                            const SizedBox(
-                              width: 25,
-                            ),
-                            Column(
-                              children: const [
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Text(
-                                  "Scan & Pay",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 1.5),
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Text("Pay to Friends, Vendors,\nShop & More",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        letterSpacing: 0.5))
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: mediaQuery.width * 0.10,
-                      ),
-                      Column(
-                        children: [
-                          Card(
-                            elevation: 10,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              height: mediaQuery.height * 0.07,
-                              width: mediaQuery.width * 0.12,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.asset("assets/rewards.png"),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: mediaQuery.height * 0.01,
-                          ),
-                          const Text(
-                            "Payouts",
-                            style: TextStyle(fontSize: 12),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: mediaQuery.height * 0.06,
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 10),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "SEND MONEY",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 0.8),
-                            ),
-                            SizedBox(
-                              height: mediaQuery.height * 0.01,
-                            ),
-                            const Text(
-                              "From Your Bank A/C or Wallet",
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0.3),
-                            ),
-                            SizedBox(
-                              height: mediaQuery.height * 0.02,
-                            ),
-                            ShapeOfView(
-                              shape: ArcShape(
-                                  direction: ArcDirection.Outside,
-                                  height: 20,
-                                  position: ArcPosition.Bottom),
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: SizedBox(
-                                  height: mediaQuery.height * 0.18,
-                                  child: GridView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      // Create a grid with 2 columns. If you change the scrollDirection to
-                                      // horizontal, this produces 2 rows.
-                                      itemCount: iconImages.length,
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        childAspectRatio: 2.5 / 1.5,
-                                        crossAxisCount: 1,
-                                        crossAxisSpacing: 0.2,
-                                      ),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Center(
-                                          child: InkWell(
-                                            onTap: () => onTapSendMoney(index),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Image.asset(
-                                                  iconImages[index],
-                                                  height: 55,
-                                                ),
-                                                Text(
-                                                  iconNames[index],
-                                                  style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: mediaQuery.height * 0.03,
-                            ),
-                            const Text(
-                              "Wallet Details",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 0.8),
-                            ),
-                            SizedBox(
-                              height: mediaQuery.height * 0.02,
-                            ),
-                            ShapeOfView(
-                              shape: ArcShape(
-                                  direction: ArcDirection.Outside,
-                                  height: 20,
-                                  position: ArcPosition.Bottom),
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: SizedBox(
-                                  height: mediaQuery.height * 0.24,
-                                  child: GridView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      // Create a grid with 2 columns. If you change the scrollDirection to
-                                      // horizontal, this produces 2 rows.
-                                      itemCount: iconImages2.length,
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        childAspectRatio: 3.5 / 1.8,
-                                        crossAxisCount: 1,
-                                        mainAxisSpacing: 2,
-                                      ),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Center(
-                                          child: InkWell(
-                                            onTap: () => onTapSendMoney(index),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Image.asset(
-                                                  iconImages2[index],
-                                                  height: 55,
-                                                ),
-                                                Text(
-                                                  iconNames2[index],
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: mediaQuery.height * 0.03,
-                            ),
-                            const Padding(
-                                padding: EdgeInsets.only(left: 0, top: 10),
-                                child: Text(
-                                  "Recharge and Bill Payment",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.5),
-                                )),
-                            SizedBox(
-                              height: mediaQuery.height * 0.02,
-                            ),
-                            ShapeOfView(
-                              shape: ArcShape(
-                                  direction: ArcDirection.Outside,
-                                  height: 20,
-                                  position: ArcPosition.Bottom),
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 15),
-                                child: SizedBox(
-                                  height: mediaQuery.height * 0.18,
-                                  child: GridView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      // Create a grid with 2 columns. If you change the scrollDirection to
-                                      // horizontal, this produces 2 rows.
-                                      itemCount: iconImages3.length,
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        childAspectRatio: 2.8 / 1.9,
-                                        crossAxisCount: 1,
-                                        crossAxisSpacing: 0.2,
-                                      ),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Center(
-                                          child: InkWell(
-                                            onTap: () => onTapRecharge(index),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Image.asset(
-                                                  iconImages3[index],
-                                                  height: 55,
-                                                ),
-                                                Text(
-                                                  iconNames3[index],
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: mediaQuery.height * 0.03,
-                            ),
-                            Image.asset(
-                              "assets/banner.jpg",
-                              width: double.infinity,
-                              fit: BoxFit.fill,
-                            ),
-                            SizedBox(
-                              height: mediaQuery.height * 0.03,
-                            ),
-                            SizedBox(
-                              height: mediaQuery.height * 0.02,
-                            ),
-                            const Padding(
-                                padding: EdgeInsets.only(left: 20, top: 12),
-                                child: Text(
-                                  "Brand Vouchers & Subscriptions",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.5),
-                                )),
-                            SizedBox(
-                              height: mediaQuery.height * 0.02,
-                            ),
-                            ShapeOfView(
-                              shape: ArcShape(
-                                  direction: ArcDirection.Outside,
-                                  height: 20,
-                                  position: ArcPosition.Bottom),
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 15),
-                                child: SizedBox(
-                                  height: mediaQuery.height * 0.18,
-                                  child: GridView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      // Create a grid with 2 columns. If you change the scrollDirection to
-                                      // horizontal, this produces 2 rows.
-                                      itemCount: iconImages6.length,
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        childAspectRatio: 2.8 / 1.9,
-                                        crossAxisCount: 1,
-                                        crossAxisSpacing: 0.2,
-                                      ),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Center(
-                                          child: InkWell(
-                                            onTap: () => onTapSendMoney(index),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Image.asset(
-                                                  iconImages6[index],
-                                                  height: 55,
-                                                ),
-                                                Text(
-                                                  iconNames6[index],
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: mediaQuery.height * 0.03,
-                            ),
-                            const Padding(
-                                padding: EdgeInsets.only(left: 20, top: 12),
-                                child: Text(
-                                  "Investments & Financial Services",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.5),
-                                )),
-                            SizedBox(
-                              height: mediaQuery.height * 0.02,
-                            ),
-                            ShapeOfView(
-                              shape: ArcShape(
-                                  direction: ArcDirection.Outside,
-                                  height: 20,
-                                  position: ArcPosition.Bottom),
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 15),
-                                child: SizedBox(
-                                  height: mediaQuery.height * 0.18,
-                                  child: GridView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      // Create a grid with 2 columns. If you change the scrollDirection to
-                                      // horizontal, this produces 2 rows.
-                                      itemCount: iconImages4.length,
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        childAspectRatio: 2.8 / 1.9,
-                                        crossAxisCount: 1,
-                                        crossAxisSpacing: 0.2,
-                                      ),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Center(
-                                          child: InkWell(
-                                            onTap: () => onTapSendMoney(index),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Image.asset(
-                                                  iconImages4[index],
-                                                  height: 55,
-                                                ),
-                                                Text(
-                                                  iconNames4[index],
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: mediaQuery.height * 0.03,
-                            ),
-                            const Padding(
-                                padding: EdgeInsets.only(
-                                  left: 20,
-                                ),
-                                child: Text(
-                                  "Loan",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.5),
-                                )),
-                            SizedBox(
-                              height: mediaQuery.height * 0.02,
-                            ),
-                            ShapeOfView(
-                              shape: ArcShape(
-                                  direction: ArcDirection.Outside,
-                                  height: 20,
-                                  position: ArcPosition.Bottom),
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 15),
-                                child: SizedBox(
-                                  height: mediaQuery.height * 0.18,
-                                  child: GridView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      // Create a grid with 2 columns. If you change the scrollDirection to
-                                      // horizontal, this produces 2 rows.
-                                      itemCount: iconImages5.length,
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        childAspectRatio: 2.8 / 1.9,
-                                        crossAxisCount: 1,
-                                        crossAxisSpacing: 0.2,
-                                      ),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Center(
-                                          child: InkWell(
-                                            onTap: () => onTapSendMoney(index),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Image.asset(
-                                                  iconImages5[index],
-                                                  height: 55,
-                                                ),
-                                                Text(
-                                                  iconNames5[index],
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: mediaQuery.height * 0.03,
-                            ),
-                            const Padding(
-                                padding: EdgeInsets.only(left: 20),
-                                child: Text(
-                                  "Insurance",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.5),
-                                )),
-                            SizedBox(
-                              height: mediaQuery.height * 0.02,
-                            ),
-                            ShapeOfView(
-                              shape: ArcShape(
-                                  direction: ArcDirection.Outside,
-                                  height: 20,
-                                  position: ArcPosition.Bottom),
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 15),
-                                child: SizedBox(
-                                  height: mediaQuery.height * 0.18,
-                                  child: GridView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      // Create a grid with 2 columns. If you change the scrollDirection to
-                                      // horizontal, this produces 2 rows.
-                                      itemCount: iconImages7.length,
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        childAspectRatio: 2.8 / 1.9,
-                                        crossAxisCount: 1,
-                                        crossAxisSpacing: 0.2,
-                                      ),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Center(
-                                          child: InkWell(
-                                            onTap: () => onTapSendMoney(index),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Image.asset(
-                                                  iconImages7[index],
-                                                  height: 55,
-                                                ),
-                                                Text(
-                                                  iconNames7[index],
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: mediaQuery.height * 0.03,
-                            ),
-                            SizedBox(
-                              height: mediaQuery.height * 0.02,
-                            ),
-                            const Padding(
-                                padding: EdgeInsets.only(left: 20, top: 12),
-                                child: Text(
-                                  "Travel & Transport Services",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.5),
-                                )),
-                            SizedBox(
-                              height: mediaQuery.height * 0.02,
-                            ),
-                            ShapeOfView(
-                              shape: ArcShape(
-                                  direction: ArcDirection.Outside,
-                                  height: 20,
-                                  position: ArcPosition.Bottom),
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 15),
-                                child: SizedBox(
-                                  height: mediaQuery.height * 0.18,
-                                  child: GridView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      // Create a grid with 2 columns. If you change the scrollDirection to
-                                      // horizontal, this produces 2 rows.
-                                      itemCount: iconImages8.length,
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        childAspectRatio: 2.8 / 1.9,
-                                        crossAxisCount: 1,
-                                        crossAxisSpacing: 0.2,
-                                      ),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Center(
-                                          child: InkWell(
-                                            onTap: () => onTapSendMoney(index),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Image.asset(
-                                                  iconImages8[index],
-                                                  height: 55,
-                                                ),
-                                                Text(
-                                                  iconNames8[index],
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: mediaQuery.height * 0.03,
-                            ),
-                            const Padding(
-                                padding: EdgeInsets.only(left: 0, top: 12),
-                                child: Text(
-                                  "Booking Services",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.5),
-                                )),
-                            SizedBox(
-                              height: mediaQuery.height * 0.02,
-                            ),
-                            ShapeOfView(
-                              shape: ArcShape(
-                                  direction: ArcDirection.Outside,
-                                  height: 20,
-                                  position: ArcPosition.Bottom),
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 15),
-                                child: SizedBox(
-                                  height: mediaQuery.height * 0.18,
-                                  child: GridView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      // Create a grid with 2 columns. If you change the scrollDirection to
-                                      // horizontal, this produces 2 rows.
-                                      itemCount: iconImages9.length,
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        childAspectRatio: 2.8 / 1.9,
-                                        crossAxisCount: 1,
-                                        crossAxisSpacing: 0.2,
-                                      ),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Center(
-                                          child: InkWell(
-                                            onTap: () => onTapSendMoney(index),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Image.asset(
-                                                  iconImages9[index],
-                                                  height: 55,
-                                                ),
-                                                Text(
-                                                  iconNames9[index],
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: mediaQuery.height * 0.03,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 10, top: 10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)
-                                        .home_screen_shopping_categories,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
+                              children: [
+                                Card(
+                                  elevation: 10,
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    height: mediaQuery.height * 0.07,
+                                    width: mediaQuery.width * 0.12,
+                                    child: Image.asset("assets/hsasset2.png"),
                                   ),
-                                  SizedBox(
-                                    height: 30,
-                                    child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            primary: MyTheme.accent_color,
-                                            shape: StadiumBorder()),
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (ctx) => Home2()));
-                                        },
-                                        child: Text("View All +")),
+                                ),
+                                SizedBox(
+                                  height: mediaQuery.height * 0.01,
+                                ),
+                                const Text(
+                                  "Add Funds",
+                                  style: TextStyle(fontSize: 12),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: mediaQuery.height * 0.02,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              height: mediaQuery.height * 0.15,
+                              width: mediaQuery.width * 0.65,
+                              decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(15),
+                                      bottomRight: Radius.circular(15)),
+                                  gradient: LinearGradient(
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                      colors: <Color>[
+                                        Color(0xFF00796B),
+                                        Color(0xFF311B92)
+                                      ])),
+                              child: Row(
+                                children: [
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Image.asset(
+                                    "assets/hsasset3.png",
+                                    height: 60,
+                                  ),
+                                  const SizedBox(
+                                    width: 25,
+                                  ),
+                                  Column(
+                                    children: const [
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        "Send Money \nEasily",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 1.5),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                          "Easily transfer funds \nto other users",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w300,
+                                              color: Colors.white,
+                                              fontSize: 8,
+                                              letterSpacing: 0.5))
+                                    ],
                                   )
                                 ],
                               ),
                             ),
-                            ShapeOfView(
-                              shape: ArcShape(
-                                  direction: ArcDirection.Outside,
-                                  height: 20,
-                                  position: ArcPosition.Bottom),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 0, right: 22),
-                                child: SizedBox(
-                                  height: mediaQuery.height * 0.20,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 12),
-                                    child: GridView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        // Create a grid with 2 columns. If you change the scrollDirection to
-                                        // horizontal, this produces 2 rows.
-                                        itemCount: _featuredCategoryList.length,
-                                        gridDelegate:
-                                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 1,
-                                                // crossAxisSpacing: 5,
-                                                // mainAxisSpacing: 2.0,
-                                                childAspectRatio: 3 / 2),
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              Container(
-                                                height: 60,
-                                                width: 60,
-                                                child: ClipOval(
-                                                  child:
-                                                      FadeInImage.assetNetwork(
-                                                    placeholder:
-                                                        'assets/placeholder.png',
-                                                    image: AppConfig.BASE_PATH +
-                                                        _featuredCategoryList[
-                                                                index]
-                                                            .banner,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    8, 8, 8, 4),
-                                                child: Container(
-                                                  height: 32,
-                                                  child: Text(
-                                                    _featuredCategoryList[index]
-                                                        .name,
-                                                    textAlign: TextAlign.center,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 2,
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 11,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        }),
+                            SizedBox(
+                              width: mediaQuery.width * 0.10,
+                            ),
+                            Column(
+                              children: [
+                                Card(
+                                  elevation: 10,
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    height: mediaQuery.height * 0.07,
+                                    width: mediaQuery.width * 0.12,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Image.asset("assets/hsasset6.png"),
+                                    ),
                                   ),
                                 ),
+                                SizedBox(
+                                  height: mediaQuery.height * 0.01,
+                                ),
+                                const Text(
+                                  "Rewards",
+                                  style: TextStyle(fontSize: 12),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: mediaQuery.height * 0.02,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              height: mediaQuery.height * 0.12,
+                              width: mediaQuery.width * 0.65,
+                              decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(15),
+                                      bottomRight: Radius.circular(15)),
+                                  gradient: LinearGradient(
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                      colors: <Color>[
+                                        Color(0xFF0288D1),
+                                        Color(0xFF0D47A1)
+                                      ])),
+                              child: Row(
+                                children: [
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Image.asset(
+                                    "assets/hsasset4.png",
+                                    height: 60,
+                                  ),
+                                  const SizedBox(
+                                    width: 25,
+                                  ),
+                                  Column(
+                                    children: const [
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        "Scan & Pay",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 1.5),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                          "Pay to Friends, Vendors,\nShop & More",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                              letterSpacing: 0.5))
+                                    ],
+                                  )
+                                ],
                               ),
                             ),
                             SizedBox(
-                              height: mediaQuery.height * 0.12,
+                              width: mediaQuery.width * 0.10,
                             ),
-                            Container(
-                              height: 80,
-                            ),
-                            Align(
-                                alignment: Alignment.center,
-                                child: buildProductLoadingContainer())
-                          ]))
-                ]))));
+                            Column(
+                              children: [
+                                Card(
+                                  elevation: 10,
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    height: mediaQuery.height * 0.07,
+                                    width: mediaQuery.width * 0.12,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Image.asset("assets/rewards.png"),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: mediaQuery.height * 0.01,
+                                ),
+                                const Text(
+                                  "Payouts",
+                                  style: TextStyle(fontSize: 12),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: mediaQuery.height * 0.06,
+                        ),
+                        Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 20),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "SEND MONEY",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 0.8),
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.01,
+                                  ),
+                                  const Text(
+                                    "From Your Bank A/C or Wallet",
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                        letterSpacing: 0.3),
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.02,
+                                  ),
+                                  ShapeOfView(
+                                    shape: ArcShape(
+                                        direction: ArcDirection.Outside,
+                                        height: 20,
+                                        position: ArcPosition.Bottom),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 10),
+                                      child: SizedBox(
+                                        // width: double.infinity,
+                                        height: mediaQuery.height * 0.18,
+
+                                        child: GridView.builder(
+                                            shrinkWrap: true,
+                                            scrollDirection: Axis.horizontal,
+                                            // Create a grid with 2 columns. If you change the scrollDirection to
+                                            // horizontal, this produces 2 rows.
+                                            itemCount: iconImages.length,
+                                            gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                              childAspectRatio: 1.55,
+                                              crossAxisCount: 1,
+
+                                              // crossAxisSpacing: 5,
+                                            ),
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Center(
+                                                child: InkWell(
+                                                  onTap: () =>
+                                                      onTapSendMoney(index),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Image.asset(
+                                                        iconImages[index],
+                                                        height: SizeConfig
+                                                                .blockSizeVertical *
+                                                            8,
+                                                      ),
+                                                      Text(
+                                                        iconNames[index],
+                                                        style: const TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            }),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.03,
+                                  ),
+                                  const Text(
+                                    "Wallet Details",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 0.8),
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.02,
+                                  ),
+                                  ShapeOfView(
+                                    shape: ArcShape(
+                                        direction: ArcDirection.Outside,
+                                        height: 20,
+                                        position: ArcPosition.Bottom),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 10),
+                                      child: SizedBox(
+                                        height: mediaQuery.height * 0.24,
+                                        child: GridView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            // Create a grid with 2 columns. If you change the scrollDirection to
+                                            // horizontal, this produces 2 rows.
+                                            itemCount: iconImages2.length,
+                                            gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                              childAspectRatio: 2.1,
+                                              crossAxisCount: 1,
+                                              mainAxisSpacing: 2,
+                                            ),
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Center(
+                                                child: InkWell(
+                                                  onTap: () =>
+                                                      onTapSendMoney(index),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Image.asset(
+                                                        iconImages2[index],
+                                                        height: SizeConfig
+                                                                .blockSizeVertical *
+                                                            8,
+                                                      ),
+                                                      FittedBox(
+                                                        fit: BoxFit.contain,
+                                                        child: Text(
+                                                          iconNames2[index],
+                                                          textAlign:
+                                                              TextAlign.justify,
+                                                          style: const TextStyle(
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            }),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.03,
+                                  ),
+                                  const Padding(
+                                      padding:
+                                          EdgeInsets.only(left: 0, top: 10),
+                                      child: Text(
+                                        "Recharge and Bill Payment",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.5),
+                                      )),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.02,
+                                  ),
+                                  ShapeOfView(
+                                    shape: ArcShape(
+                                        direction: ArcDirection.Outside,
+                                        height: 20,
+                                        position: ArcPosition.Bottom),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 15),
+                                      child: SizedBox(
+                                        height: mediaQuery.height * 0.18,
+                                        child: GridView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            // Create a grid with 2 columns. If you change the scrollDirection to
+                                            // horizontal, this produces 2 rows.
+                                            itemCount: iconImages3.length,
+                                            gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                              childAspectRatio: 1.55,
+                                              crossAxisCount: 1,
+                                              crossAxisSpacing: 0.2,
+                                            ),
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Center(
+                                                child: InkWell(
+                                                  onTap: () =>
+                                                      onTapRecharge(index),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Image.asset(
+                                                        iconImages3[index],
+                                                        height: SizeConfig
+                                                                .blockSizeVertical *
+                                                            8,
+                                                      ),
+                                                      Text(
+                                                        iconNames3[index],
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: const TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            }),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.03,
+                                  ),
+                                  Image.asset(
+                                    "assets/banner.jpg",
+                                    width: double.infinity,
+                                    fit: BoxFit.fill,
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.03,
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.02,
+                                  ),
+                                  const Padding(
+                                      padding:
+                                          EdgeInsets.only(left: 20, top: 12),
+                                      child: Text(
+                                        "Brand Vouchers & Subscriptions",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.5),
+                                      )),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.02,
+                                  ),
+                                  ShapeOfView(
+                                    shape: ArcShape(
+                                        direction: ArcDirection.Outside,
+                                        height: 20,
+                                        position: ArcPosition.Bottom),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 15),
+                                      child: SizedBox(
+                                        height: mediaQuery.height * 0.18,
+                                        child: GridView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            // Create a grid with 2 columns. If you change the scrollDirection to
+                                            // horizontal, this produces 2 rows.
+                                            itemCount: iconImages6.length,
+                                            gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                              childAspectRatio: 1.55,
+                                              crossAxisCount: 1,
+                                              crossAxisSpacing: 0.2,
+                                            ),
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Center(
+                                                child: InkWell(
+                                                  onTap: () =>
+                                                      onTapSendMoney(index),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Image.asset(
+                                                        iconImages6[index],
+                                                        height: SizeConfig
+                                                                .blockSizeVertical *
+                                                            8,
+                                                      ),
+                                                      // SizedBox(
+                                                      //   height: SizeConfig
+                                                      //           .safeBlockVertical *
+                                                      //       2,
+                                                      // ),
+                                                      Text(
+                                                        iconNames6[index],
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: const TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            }),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.03,
+                                  ),
+                                  const Padding(
+                                      padding:
+                                          EdgeInsets.only(left: 20, top: 12),
+                                      child: Text(
+                                        "Investments & Financial Services",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.5),
+                                      )),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.02,
+                                  ),
+                                  ShapeOfView(
+                                    shape: ArcShape(
+                                        direction: ArcDirection.Outside,
+                                        height: 20,
+                                        position: ArcPosition.Bottom),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 15),
+                                      child: SizedBox(
+                                        height: mediaQuery.height * 0.18,
+                                        child: GridView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            // Create a grid with 2 columns. If you change the scrollDirection to
+                                            // horizontal, this produces 2 rows.
+                                            itemCount: iconImages4.length,
+                                            gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                              childAspectRatio: 1.55,
+                                              crossAxisCount: 1,
+                                              crossAxisSpacing: 0.2,
+                                            ),
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Center(
+                                                child: InkWell(
+                                                  onTap: () =>
+                                                      onTapSendMoney(index),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Image.asset(
+                                                        iconImages4[index],
+                                                        height: SizeConfig
+                                                                .blockSizeVertical *
+                                                            8,
+                                                      ),
+                                                      Text(
+                                                        iconNames4[index],
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: const TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            }),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.03,
+                                  ),
+                                  const Padding(
+                                      padding: EdgeInsets.only(
+                                        left: 20,
+                                      ),
+                                      child: Text(
+                                        "Loan",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.5),
+                                      )),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.02,
+                                  ),
+                                  ShapeOfView(
+                                    shape: ArcShape(
+                                        direction: ArcDirection.Outside,
+                                        height: 20,
+                                        position: ArcPosition.Bottom),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 15),
+                                      child: SizedBox(
+                                        height: mediaQuery.height * 0.18,
+                                        child: GridView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            // Create a grid with 2 columns. If you change the scrollDirection to
+                                            // horizontal, this produces 2 rows.
+                                            itemCount: iconImages5.length,
+                                            gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                              childAspectRatio: 1.55,
+                                              crossAxisCount: 1,
+                                              crossAxisSpacing: 0.2,
+                                            ),
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Center(
+                                                child: InkWell(
+                                                  onTap: () =>
+                                                      onTapSendMoney(index),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Image.asset(
+                                                        iconImages5[index],
+                                                        height: SizeConfig
+                                                                .blockSizeVertical *
+                                                            8,
+                                                      ),
+                                                      Text(
+                                                        iconNames5[index],
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: const TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            }),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.03,
+                                  ),
+                                  const Padding(
+                                      padding: EdgeInsets.only(left: 20),
+                                      child: Text(
+                                        "Insurance",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.5),
+                                      )),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.02,
+                                  ),
+                                  ShapeOfView(
+                                    shape: ArcShape(
+                                        direction: ArcDirection.Outside,
+                                        height: 20,
+                                        position: ArcPosition.Bottom),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 15),
+                                      child: SizedBox(
+                                        height: mediaQuery.height * 0.18,
+                                        child: GridView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            // Create a grid with 2 columns. If you change the scrollDirection to
+                                            // horizontal, this produces 2 rows.
+                                            itemCount: iconImages7.length,
+                                            gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                              childAspectRatio: 1.55,
+                                              crossAxisCount: 1,
+                                              crossAxisSpacing: 0.2,
+                                            ),
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Center(
+                                                child: InkWell(
+                                                  onTap: () =>
+                                                      onTapSendMoney(index),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Image.asset(
+                                                        iconImages7[index],
+                                                        height: SizeConfig
+                                                                .blockSizeVertical *
+                                                            8,
+                                                      ),
+                                                      Text(
+                                                        iconNames7[index],
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: const TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            }),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.03,
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.02,
+                                  ),
+                                  const Padding(
+                                      padding:
+                                          EdgeInsets.only(left: 20, top: 12),
+                                      child: Text(
+                                        "Travel & Transport Services",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.5),
+                                      )),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.02,
+                                  ),
+                                  ShapeOfView(
+                                    shape: ArcShape(
+                                        direction: ArcDirection.Outside,
+                                        height: 20,
+                                        position: ArcPosition.Bottom),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 15),
+                                      child: SizedBox(
+                                        height: mediaQuery.height * 0.18,
+                                        child: GridView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            // Create a grid with 2 columns. If you change the scrollDirection to
+                                            // horizontal, this produces 2 rows.
+                                            itemCount: iconImages8.length,
+                                            gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                              childAspectRatio: 1.55,
+                                              crossAxisCount: 1,
+                                              crossAxisSpacing: 0.2,
+                                            ),
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Center(
+                                                child: InkWell(
+                                                  onTap: () =>
+                                                      onTapSendMoney(index),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Image.asset(
+                                                        iconImages8[index],
+                                                        height: SizeConfig
+                                                                .blockSizeVertical *
+                                                            8,
+                                                      ),
+                                                      Text(
+                                                        iconNames8[index],
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: const TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            }),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.03,
+                                  ),
+                                  const Padding(
+                                      padding:
+                                          EdgeInsets.only(left: 0, top: 12),
+                                      child: Text(
+                                        "Booking Services",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.5),
+                                      )),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.02,
+                                  ),
+                                  ShapeOfView(
+                                    shape: ArcShape(
+                                        direction: ArcDirection.Outside,
+                                        height: 20,
+                                        position: ArcPosition.Bottom),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 15),
+                                      child: SizedBox(
+                                        height: mediaQuery.height * 0.18,
+                                        child: GridView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            // Create a grid with 2 columns. If you change the scrollDirection to
+                                            // horizontal, this produces 2 rows.
+                                            itemCount: iconImages9.length,
+                                            gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                              childAspectRatio: 1.55,
+                                              crossAxisCount: 1,
+                                              crossAxisSpacing: 0.2,
+                                            ),
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Center(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () =>
+                                                          onTapSendMoney(index),
+                                                      child: Image.asset(
+                                                        iconImages9[index],
+                                                        height: SizeConfig
+                                                                .blockSizeVertical *
+                                                            8,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      iconNames9[index],
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: const TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    )
+                                                  ],
+                                                ),
+                                              );
+                                            }),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.03,
+                                  ),
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.only(bottom: 10, top: 10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)
+                                              .home_screen_shopping_categories,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(
+                                          height: 30,
+                                          child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  primary: MyTheme.accent_color,
+                                                  shape: StadiumBorder()),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (ctx) =>
+                                                            Home2()));
+                                              },
+                                              child: Text("View All +")),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  ShapeOfView(
+                                    shape: ArcShape(
+                                        direction: ArcDirection.Outside,
+                                        height: 20,
+                                        position: ArcPosition.Bottom),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 0, right: 22),
+                                      child: SizedBox(
+                                        height: mediaQuery.height * 0.20,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 12),
+                                          child: GridView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              // Create a grid with 2 columns. If you change the scrollDirection to
+                                              // horizontal, this produces 2 rows.
+                                              itemCount:
+                                                  _featuredCategoryList.length,
+                                              gridDelegate:
+                                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                                      crossAxisCount: 1,
+                                                      // crossAxisSpacing: 5,
+                                                      // mainAxisSpacing: 2.0,
+                                                      childAspectRatio: 1.65),
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                return Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () {
+                                                        Navigator.push(context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) {
+                                                          return CategoryProducts(
+                                                            category_id:
+                                                                _featuredCategoryList[
+                                                                        index]
+                                                                    .id,
+                                                            category_name:
+                                                                _featuredCategoryList[
+                                                                        index]
+                                                                    .name,
+                                                          );
+                                                        }));
+                                                      },
+                                                      child: Container(
+                                                        height: SizeConfig
+                                                                .blockSizeVertical *
+                                                            8.5,
+                                                        width: SizeConfig
+                                                                .blockSizeHorizontal *
+                                                            16,
+                                                        child: ClipOval(
+                                                          child: FadeInImage
+                                                              .assetNetwork(
+                                                            height: SizeConfig
+                                                                    .blockSizeVertical *
+                                                                8,
+                                                            placeholder:
+                                                                'assets/placeholder.png',
+                                                            image: AppConfig
+                                                                    .BASE_PATH +
+                                                                _featuredCategoryList[
+                                                                        index]
+                                                                    .banner,
+                                                            fit: BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.fromLTRB(
+                                                              8, 8, 8, 4),
+                                                      child: Container(
+                                                        height: 32,
+                                                        child: Text(
+                                                          _featuredCategoryList[
+                                                                  index]
+                                                              .name,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          maxLines: 2,
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 11,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              }),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: mediaQuery.height * 0.12,
+                                  ),
+                                  Container(
+                                    height: 80,
+                                  ),
+                                  Align(
+                                      alignment: Alignment.center,
+                                      child: buildProductLoadingContainer())
+                                ]))
+                      ]))
+                : Center(
+                    child: CircularProgressIndicator(),
+                  )));
   }
 
   buildHomeFeaturedCategories(context) {
@@ -1683,4 +1771,55 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+}
+
+Widget buildHomeTopBanner(BuildContext context, mediaQuery) {
+  return Container(
+    height: mediaQuery.height * 0.12,
+    width: mediaQuery.width * 0.65,
+    decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(15), bottomRight: Radius.circular(15)),
+        gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: <Color>[Color(0xFF0288D1), Color(0xFF0D47A1)])),
+    child: Row(
+      children: [
+        const SizedBox(
+          width: 25,
+        ),
+        Image.asset(
+          "assets/hsasset1.png",
+          height: 60,
+        ),
+        const SizedBox(
+          width: 25,
+        ),
+        Column(
+          children: const [
+            SizedBox(
+              height: 15,
+            ),
+            Text(
+              "Services Offers",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.5),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Text("Recharge, Bills, Flights & \nMore",
+                style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white,
+                    fontSize: 10,
+                    letterSpacing: 0.5))
+          ],
+        )
+      ],
+    ),
+  );
 }

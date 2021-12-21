@@ -1,6 +1,7 @@
+import 'dart:developer';
+
 import 'package:active_ecommerce_flutter/data_model/transaction_response.dart';
 import 'package:active_ecommerce_flutter/data_model/wallet_response.dart';
-import 'package:active_ecommerce_flutter/helpers/responsive_helper.dart';
 import 'package:active_ecommerce_flutter/my_theme.dart';
 import 'package:active_ecommerce_flutter/repositories/transaction_repository.dart';
 import 'package:active_ecommerce_flutter/repositories/wallet_repository.dart';
@@ -49,6 +50,7 @@ class _PassbookState extends State<Passbook> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context).size;
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
@@ -77,26 +79,48 @@ class _PassbookState extends State<Passbook> {
                           TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
                     ),
                     SizedBox(
-                      height: SizeConfig.blockSizeVertical * 3,
+                      height: mediaQuery.height * 0.03,
                     ),
                     Container(
-                        height: SizeConfig.blockSizeVertical * 70,
-                        child: ListView(children: [
-                          passBookCards(context, walletData, "PAYALLDAY WALLET",
-                              "${walletData.mainWalletBalance}" ?? ""),
-                          passBookCards(context, walletData, "CASHBACK WALLET",
-                              "${walletData.cashbackWalletBalance}" ?? ""),
-                          passBookCards(context, walletData, "INCOME WALLET",
-                              "${walletData.incomeWalletBalance}" ?? ""),
-                          passBookCards(context, walletData, "SHOPPING WALLET",
-                              "${walletData.shoppingWalletBalance}" ?? ""),
-                          passBookCards(context, walletData, "VOUCHER WALLET",
-                              "${walletData.voucherWalletBalance}" ?? "")
-                        ])),
+                        height: mediaQuery.height * 0.6,
+                        child: ListView(
+                            physics: NeverScrollableScrollPhysics(),
+                            children: [
+                              passBookCards(
+                                  context,
+                                  walletData,
+                                  "PAYALLDAY WALLET",
+                                  "\u{20B9} ${walletData.mainWalletBalance}" ??
+                                      ""),
+                              passBookCards(
+                                  context,
+                                  walletData,
+                                  "CASHBACK WALLET",
+                                  "\u{20B9} ${walletData.cashbackWalletBalance}" ??
+                                      ""),
+                              passBookCards(
+                                  context,
+                                  walletData,
+                                  "INCOME WALLET",
+                                  "\u{20B9} ${walletData.incomeWalletBalance}" ??
+                                      ""),
+                              passBookCards(
+                                  context,
+                                  walletData,
+                                  "SHOPPING WALLET",
+                                  "\u{20B9} ${walletData.shoppingWalletBalance}" ??
+                                      ""),
+                              passBookCards(
+                                  context,
+                                  walletData,
+                                  "VOUCHER WALLET",
+                                  "\u{20B9} ${walletData.voucherWalletBalance}" ??
+                                      "")
+                            ])),
                     Padding(
                       padding: const EdgeInsets.only(left: 160),
                       child: SizedBox(
-                        width: SizeConfig.blockSizeVertical * 13,
+                        width: mediaQuery.width * 0.22,
                         child: ElevatedButton(
                             style: ButtonStyle(
                                 backgroundColor:
@@ -112,11 +136,13 @@ class _PassbookState extends State<Passbook> {
                             onPressed: () {},
                             child: Row(
                               children: [
-                                Text(
-                                  "View All",
-                                  style: TextStyle(
-                                      color: Colors.indigo,
-                                      fontWeight: FontWeight.w800),
+                                FittedBox(
+                                  child: Text(
+                                    "View All",
+                                    style: TextStyle(
+                                        color: Colors.indigo,
+                                        fontWeight: FontWeight.w800),
+                                  ),
                                 ),
                                 Icon(
                                   Icons.arrow_drop_down,
@@ -139,31 +165,66 @@ class _PassbookState extends State<Passbook> {
                         Icon(Icons.list_alt)
                       ],
                     ),
-                    Container(
-                      height: SizeConfig.blockSizeVertical * 50,
-                      child: ListView(
-                        children: [
-                          ListTile(
-                            leading: CircleAvatar(
-                              child: Text(
-                                "${transactionData.data.payAmount}" ?? "",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15),
-                              ),
-                            ),
-                            title:
-                                Text("${transactionData.data.payTitle}" ?? ""),
-                            subtitle: Text(
-                                "${transactionData.data.payCreatedAt}" ?? ""),
-                            trailing: Text(
-                              "${transactionData.data.payStatus}" ?? "",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 15),
-                            ),
+                    isLoading
+                        ? Center(
+                            child: CircularProgressIndicator(),
                           )
-                        ],
-                      ),
-                    )
+                        : Container(
+                            height: mediaQuery.height * 4.4,
+                            child: ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: walletData
+                                        .walletTransactionHistory[0]
+                                        .payTransaction
+                                        .length ??
+                                    "",
+                                itemBuilder: (
+                                  context,
+                                  index,
+                                ) {
+                                  // log("${walletData.walletTransactionHistory[0].payTransaction[index].payTitle}");
+                                  return isLoading
+                                      ? Center(
+                                          child: CircularProgressIndicator(),
+                                        )
+                                      : ListTile(
+                                          leading: CircleAvatar(
+                                            child: Text(
+                                              "${walletData.walletTransactionHistory[0].payTransaction[index].id}" ??
+                                                  "",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15),
+                                            ),
+                                          ),
+                                          title: Text(
+                                            "${walletData.walletTransactionHistory[0].payTransaction[index].payTitle}"
+                                                    .replaceAll(
+                                                        "PayTitle.", "") ??
+                                                "",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12),
+                                          ),
+                                          subtitle: Text(
+                                            "${walletData.walletTransactionHistory[0].payTransaction[index].payCreatedAt}"
+                                                    .replaceAll(".000Z", "") ??
+                                                "",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                          ),
+                                          trailing: Text(
+                                            "\u{20B9} ${walletData.walletTransactionHistory[0].payTransaction[index].payAmount}" ??
+                                                "",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15),
+                                          ),
+                                        );
+                                }),
+                          )
                   ],
                 ),
               ),
@@ -199,26 +260,26 @@ Widget passBookCards(BuildContext context, WalletReponse walletData,
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              walletAmount,
+              walletAmount ?? "",
               style: TextStyle(
                   color: MyTheme.black_color,
                   fontSize: 15,
                   fontWeight: FontWeight.bold),
             ),
-            SizedBox(
-              height: SizeConfig.blockSizeVertical * 1,
-            ),
-            Text("Savings Account No. XXXXXXXX567"),
-            SizedBox(
-              height: SizeConfig.blockSizeVertical * 1,
-            ),
-            Text(
-              "Share Account No & IFSC Code ",
-              style: TextStyle(
-                  color: Colors.blue.shade400,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12),
-            )
+            // SizedBox(
+            //   height: mediaQuery.height * 1,
+            // ),
+            // Text("Savings Account No. XXXXXXXX567"),
+            // SizedBox(
+            //   height: mediaQuery.height * 1,
+            // ),
+            // Text(
+            //   "Share Account No & IFSC Code ",
+            //   style: TextStyle(
+            //       color: Colors.blue.shade400,
+            //       fontWeight: FontWeight.bold,
+            //       fontSize: 12),
+            // )
           ],
         ),
       ),

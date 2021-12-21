@@ -16,6 +16,7 @@ class AppConfig {
   //static const DOMAIN_PATH = "demo.activeitzone.com/ecommerce_flutter_demo"; //inside a folder
   //static const DOMAIN_PATH = "mydomain.com"; // directly inside the public folder
   static const DOMAIN_PATH_PAYALLDAY = "payall.thedigitalkranti.com";
+
   //do not configure these below
   static const String API_ENDPATH = "api/v2";
   static const String PUBLIC_FOLDER = "public";

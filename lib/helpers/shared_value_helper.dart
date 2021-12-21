@@ -4,6 +4,10 @@ final SharedValue<bool> is_logged_in = SharedValue(
   value: false, // initial value
   key: "is_logged_in", // disk storage key for shared_preferences
 );
+final SharedValue<bool> is_loggedin = SharedValue(
+  value: false, // initial value
+  key: "is_logged_in", // disk storage key for shared_preferences
+);
 
 final SharedValue<String> access_token = SharedValue(
   value: "", // initial value
